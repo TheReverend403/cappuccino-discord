@@ -4,13 +4,13 @@ root:
   level: INFO
   handlers: [console]
 loggers:
-  cappuccino:
+  alembic:
     level: INFO
     handlers: [console]
     propagate: false
 formatters:
   console:
-    format: '%(asctime)s - [%(levelname)-5s]: %(message)s'
+    format: '%(asctime)s - [%(levelname)-5s] %(message)s'
 handlers:
   console:
     class: logging.StreamHandler
