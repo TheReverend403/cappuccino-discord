@@ -20,30 +20,30 @@ import yaml
 
 
 class YamlConfig(dict):
-    _base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    _config_dir = os.path.join(_base_dir, 'config')
-    _resource_dir = os.path.join(_base_dir, 'cappuccino', 'resources')
-    _must_be_configured = False  # If true, copy the default file and then exit.
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    config_dir = os.path.join(base_dir, 'config')
+    resource_dir = os.path.join(base_dir, 'cappuccino', 'resources')
+    config_required = False  # If true, copy the default file and then exit.
 
     def __init__(self, filename='config.yml'):
         super().__init__()
 
-        self._default_path = os.path.join(self._resource_dir, filename)
-        self._local_path = os.path.join(self._config_dir, filename)
+        self.default_path = os.path.join(self.resource_dir, filename)
+        self.local_path = os.path.join(self.config_dir, filename)
 
-        if not os.path.exists(f'{self._local_path}'):
+        if not os.path.exists(f'{self.local_path}'):
             try:
-                os.mkdir(self._config_dir)
+                os.mkdir(self.config_dir)
             except FileExistsError:
                 pass
 
-            if self._must_be_configured:
-                shutil.copy2(self._default_path, self._local_path)
+            if self.config_required:
+                shutil.copy2(self.default_path, self.local_path)
                 print(f'A default {filename} has been created and must be configured.')
                 exit(1)
 
         # Load files in order of default -> local.
-        for config_file in [self._default_path, self._local_path]:
+        for config_file in [self.default_path, self.local_path]:
             try:
                 with open(config_file) as fd:
                     self.update(yaml.safe_load(fd))
@@ -59,7 +59,7 @@ class LogConfig(YamlConfig):
 
 class BotConfig(YamlConfig):
 
-    _must_be_configured = True
+    config_required = True
 
     def __init__(self):
         super().__init__('config.yml')
