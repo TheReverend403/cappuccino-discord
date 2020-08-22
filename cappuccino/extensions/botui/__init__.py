@@ -26,7 +26,7 @@ class BotUI(Extension):
     def __init__(self, bot: Cappuccino, *args, **kwargs):
         super().__init__(bot, *args, **kwargs)
 
-    @commands.command()
+    @commands.command(aliases=['version'], brief='Show version info.')
     async def bots(self, ctx: commands.Context):
         pyver = platform.python_version()
         await ctx.send(f'Reporting in! (cappuccino-discord {self.bot.version}, Python {pyver})')

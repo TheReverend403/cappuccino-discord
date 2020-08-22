@@ -43,7 +43,7 @@ class Catfacts(Extension):
             random.shuffle(self.cache)
             return self.get_fact()
 
-    @commands.command()
+    @commands.command(aliases=['cf'], brief='Get a random cat fact.')
     async def catfact(self, ctx: commands.Context):
         try:
             await ctx.send(self.get_fact())
