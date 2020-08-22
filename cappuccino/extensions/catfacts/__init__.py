@@ -46,7 +46,9 @@ class Catfacts(Extension):
     @commands.command(aliases=['cf'], brief='Get a random cat fact.')
     async def catfact(self, ctx: commands.Context):
         try:
-            await ctx.send(self.get_fact())
+            async with ctx.typing():
+                fact = self.get_fact()
+            await ctx.send(fact)
         except RequestException as exc:
             self.logger.exception(exc)
             await ctx.send(f'Something terrible happened while I was researching cat facts. Sorry. :(')
