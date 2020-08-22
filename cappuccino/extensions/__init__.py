@@ -13,19 +13,17 @@
 #  You should have received a copy of the GNU General Public License
 #  along with cappuccino-discord.  If not, see <https://www.gnu.org/licenses/>.
 
-from logging.config import dictConfig
+import logging
+
+from discord.ext.commands import Cog
 
 from bot import Cappuccino
-from cappuccino.config import BotConfig, LogConfig
 
 
-def main():
-    dictConfig(LogConfig())
-    config = BotConfig()
+class Extension(Cog):
 
-    bot = Cappuccino(config)
-    bot.run()
-
-
-if __name__ == '__main__':
-    main()
+    def __init__(self, bot: Cappuccino, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.bot = bot
+        self.logger = logging.getLogger(f'cappuccino.extension.{self.qualified_name.lower()}')
+        self.config: dict = bot.config.get('extensions', {}).get(self.qualified_name.lower())

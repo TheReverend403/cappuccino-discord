@@ -23,9 +23,8 @@ class YamlConfig(dict):
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     config_dir = os.path.join(base_dir, 'config')
     resource_dir = os.path.join(base_dir, 'cappuccino', 'resources')
-    config_required = False  # If true, copy the default file and then exit.
 
-    def __init__(self, filename='config.yml'):
+    def __init__(self, filename='config.yml', required=False):
         super().__init__()
 
         self.default_path = os.path.join(self.resource_dir, filename)
@@ -37,7 +36,7 @@ class YamlConfig(dict):
             except FileExistsError:
                 pass
 
-            if self.config_required:
+            if required:
                 shutil.copy2(self.default_path, self.local_path)
                 print(f'A default {filename} has been created and must be configured.')
                 exit(1)
@@ -59,7 +58,5 @@ class LogConfig(YamlConfig):
 
 class BotConfig(YamlConfig):
 
-    config_required = True
-
     def __init__(self):
-        super().__init__('config.yml')
+        super().__init__('config.yml', required=True)
