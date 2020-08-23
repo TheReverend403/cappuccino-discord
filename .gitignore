@@ -1,9 +1,6 @@
-
 # Editors
 .vscode/
 .idea/
-
-config/
 
 # Vagrant
 .vagrant/
@@ -117,4 +114,6 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
+!cappuccino/database/migrations
 !cappuccino/lib/
+config/

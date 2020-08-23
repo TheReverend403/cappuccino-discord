@@ -23,7 +23,7 @@ from cappuccino.database.models import Base
 class Guild(Base):
     __tablename__ = 'guilds'
 
-    discord_id = Column(BigInteger, primary_key=True)
+    id = Column(BigInteger, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(String)
 
@@ -31,7 +31,7 @@ class Guild(Base):
 class User(Base):
     __tablename__ = 'users'
 
-    discord_id = Column(BigInteger, primary_key=True)
+    id = Column(BigInteger, primary_key=True)
     username = Column(String, nullable=False)
     discriminator = Column(String, nullable=False)
     guild_members = relationship('GuildMember', backref='user', lazy=False, cascade="all, delete")
@@ -43,7 +43,7 @@ class User(Base):
 class UserProfileField(Base):
     __tablename__ = 'user_profile_fields'
 
-    user_id = Column(BigInteger, ForeignKey('users.discord_id'), primary_key=True)
+    user_id = Column(BigInteger, ForeignKey('users.id'), primary_key=True)
     category = Column(String, primary_key=True)
     value = Column(String, primary_key=True)
     list_position = Column(Integer, nullable=False)
@@ -53,6 +53,6 @@ class UserProfileField(Base):
 class GuildMember(Base):
     __tablename__ = 'guild_members'
 
-    user_id = Column(BigInteger, ForeignKey('users.discord_id'), primary_key=True)
-    guild_id = Column(BigInteger, ForeignKey('guilds.discord_id'), primary_key=True)
+    user_id = Column(BigInteger, ForeignKey('users.id'), primary_key=True)
+    guild_id = Column(BigInteger, ForeignKey('guilds.id'), primary_key=True)
     nickname = Column(String, primary_key=True)

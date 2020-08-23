@@ -83,14 +83,14 @@ class Profiles(Extension):
 
     def update_user(self, user: Type[User]):
         self.logger.debug(f'update_user({user})')
-        user_model = self.db.query(models.User).filter_by(discord_id=user.id).first()
+        user_model = self.db.query(models.User).filter_by(id=user.id).first()
 
         if user_model:
             user_model.name = user.name
             user_model.discriminator = user.discriminator
         else:
             user_model = models.User(
-                discord_id=user.id,
+                id=user.id,
                 username=user.name,
                 discriminator=user.discriminator
             )
@@ -108,7 +108,7 @@ class Profiles(Extension):
         self.db.commit()
 
     def update_guild(self, guild: Guild):
-        guild_model = self.db.query(models.Guild).filter_by(discord_id=guild.id).first()
+        guild_model = self.db.query(models.Guild).filter_by(id=guild.id).first()
         guild_name = guild.name
         guild_description = guild.description
 
@@ -116,7 +116,7 @@ class Profiles(Extension):
             guild_model.name = guild_name
             guild_model.description = guild_description
         else:
-            guild_model = models.Guild(discord_id=guild.id,
+            guild_model = models.Guild(id=guild.id,
                                        name=guild_name,
                                        description=guild_description)
 
