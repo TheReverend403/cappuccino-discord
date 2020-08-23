@@ -85,6 +85,8 @@ class Profiles(Extension):
 
     @Cog.listener()
     async def on_guild_update(self, before: Guild, after: Guild):
+        if before.name == after.name:
+            return
         self.update_guild(after)
 
     def update_user(self, user: Type[User]):
