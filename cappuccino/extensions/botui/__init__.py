@@ -18,7 +18,7 @@ import platform
 from discord.ext import commands
 
 from cappuccino.bot import Cappuccino
-from extensions import Extension
+from cappuccino.extensions import Extension
 
 
 class BotUI(Extension):

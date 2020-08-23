@@ -16,12 +16,12 @@
 import logging
 import subprocess
 
-import requests
+import aiohttp
 from discord.ext import commands
 from discord.ext.commands import Bot, ExtensionError
 
+from cappuccino.config import BotConfig
 from cappuccino.database import Database
-from config import BotConfig
 
 
 def _get_version():
@@ -42,7 +42,7 @@ class Cappuccino(Bot):
 
         for extension in self.config.get('extensions', []):
             try:
-                self.load_extension(f'extensions.{extension}')
+                self.load_extension(f'cappuccino.extensions.{extension}')
             except ExtensionError as exc:
                 self.logger.exception(f'Error occurred while loading \'{extension}\': {exc}')
             else:

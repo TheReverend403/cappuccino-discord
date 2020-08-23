@@ -13,3 +13,13 @@
 #  You should have received a copy of the GNU General Public License
 #  along with cappuccino-discord.  If not, see <https://www.gnu.org/licenses/>.
 
+from logging.config import dictConfig
+
+from cappuccino.bot import Cappuccino
+from cappuccino.config import BotConfig, LogConfig
+
+
+def create_bot():
+    dictConfig(LogConfig())
+    _bot = Cappuccino(BotConfig())
+    return _bot

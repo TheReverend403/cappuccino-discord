@@ -15,11 +15,11 @@
 
 import random
 
+from aiohttp import ClientError
 from discord.ext import commands
-from requests import RequestException
 
 from cappuccino.bot import Cappuccino
-from extensions import Extension
+from cappuccino.extensions import Extension
 
 
 class Catfacts(Extension):
