@@ -78,6 +78,10 @@ class Profiles(Extension):
     @Cog.listener()
     async def on_guild_join(self, guild: Guild):
         self.update_guild(guild)
+        for member in guild.members:
+            if member.bot or member.system:
+                continue
+            self.update_user(member)
 
     @Cog.listener()
     async def on_guild_update(self, before: Guild, after: Guild):
