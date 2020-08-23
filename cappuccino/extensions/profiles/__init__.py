@@ -43,6 +43,15 @@ class Profiles(Extension):
         super().__init__(bot, *args, **kwargs)
         self.db = self.bot.database
 
+    @Cog.listener()
+    async def on_ready(self):
+        for guild in self.bot.guilds:
+            self.update_guild(guild)
+            for member in guild.members:
+                if member.bot or member.system:
+                    continue
+                self.update_user(member)
+
     @humans_only
     @Cog.listener()
     async def on_user_update(self, before: User, after: User):
@@ -93,7 +102,7 @@ class Profiles(Extension):
             else:
                 member.nickname = member.nickname
             self.db.add(member)
-            self.logger.debug(f'set_nick({user}, {user.nick})')
+            self.logger.debug(f'set_nick({user}, {user.nick}, {user.guild.id})')
 
         self.db.add(user_model)
         self.db.commit()
