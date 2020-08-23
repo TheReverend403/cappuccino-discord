@@ -26,7 +26,7 @@ def init_sentry(bot):
         return
     else:
         bot.logger.info('Sentry logging enabled.')
-        sentry_sdk.init(dsn, integrations=[SqlalchemyIntegration()])
+        sentry_sdk.init(dsn, integrations=[SqlalchemyIntegration()], release=bot.version)
 
 
 def main():
