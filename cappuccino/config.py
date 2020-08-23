@@ -13,6 +13,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with cappuccino-discord.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
 import os
 import shutil
 
@@ -29,6 +30,7 @@ class YamlConfig(dict):
 
         self.default_path = os.path.join(self.resource_dir, filename)
         self.local_path = os.path.join(self.config_dir, filename)
+        self.logger = logging.getLogger(f'cappuccino.config')
 
         if not os.path.exists(f'{self.local_path}'):
             try:
@@ -38,7 +40,7 @@ class YamlConfig(dict):
 
             if required:
                 shutil.copy2(self.default_path, self.local_path)
-                print(f'A default {filename} has been created and must be configured.')
+                self.logger.info(f'A default {filename} has been created and must be configured.')
                 exit(1)
 
         # Load files in order of default -> local.
