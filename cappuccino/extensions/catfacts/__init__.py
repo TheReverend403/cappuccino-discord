@@ -17,6 +17,7 @@ import random
 
 from aiohttp import ClientError
 from discord.ext import commands
+from discord.utils import escape_markdown
 
 from cappuccino.bot import Cappuccino
 from cappuccino.extensions import Extension
@@ -51,7 +52,7 @@ class Catfacts(Extension):
         try:
             async with ctx.typing():
                 fact = await self.get_fact()
-            await ctx.send(fact)
+            await ctx.send(escape_markdown(fact))
         except ClientError as exc:
             self.logger.exception(exc)
             await ctx.send(f'Something terrible happened while I was researching cat facts. Sorry. :(')
