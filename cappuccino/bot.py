@@ -15,6 +15,7 @@
 
 import logging
 import subprocess
+from collections import OrderedDict
 
 import aiohttp
 from discord.ext import commands
@@ -40,7 +41,11 @@ class Cappuccino(Bot):
         super().__init__(command_prefix=self.config.get('bot').get('command_prefix', '.'), *args, **kwargs)
 
     def load_extensions(self):
-        for extension in self.config.get('extensions', []):
+        # Ensure core extensions are always forced to load before anything else regardless of user preference.
+        extensions = OrderedDict({'core': None})
+        extensions.update(self.config.get('extensions', {}))
+
+        for extension in extensions:
             try:
                 self.load_extension(f'cappuccino.extensions.{extension}')
             except ExtensionError as exc:
