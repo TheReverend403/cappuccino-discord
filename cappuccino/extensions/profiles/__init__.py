@@ -107,20 +107,20 @@ class Profiles(Extension):
         self.db.add(user_model)
         self.db.commit()
 
-    def update_guild(self, discord_guild: Guild):
-        guild = self.db.query(models.Guild).filter_by(discord_id=discord_guild.id).first()
-        guild_name = discord_guild.name
-        guild_description = discord_guild.description
+    def update_guild(self, guild: Guild):
+        guild_model = self.db.query(models.Guild).filter_by(discord_id=guild.id).first()
+        guild_name = guild.name
+        guild_description = guild.description
 
-        if guild:
-            guild.name = guild_name
-            guild.description = guild_description
+        if guild_model:
+            guild_model.name = guild_name
+            guild_model.description = guild_description
         else:
-            guild = models.Guild(discord_id=discord_guild.id,
-                                 name=guild_name,
-                                 description=guild_description)
+            guild_model = models.Guild(discord_id=guild.id,
+                                       name=guild_name,
+                                       description=guild_description)
 
-        self.db.add(guild)
+        self.db.add(guild_model)
         self.db.commit()
 
 
