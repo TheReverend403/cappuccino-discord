@@ -25,7 +25,7 @@ from cappuccino.database import Database
 
 
 def _get_version():
-    return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('UTF-8').strip()
+    return subprocess.check_output(['git', 'describe']).decode('UTF-8').strip()
 
 
 class Cappuccino(Bot):
