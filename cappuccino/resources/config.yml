@@ -12,7 +12,7 @@ sentry:
 
 # Plugins listed here will be loaded in order of appearance, child nodes are used as that plugin's configuration.
 extensions:
-  botui:
+  core:
   profiles:
   catfacts:
     limit: 1000
