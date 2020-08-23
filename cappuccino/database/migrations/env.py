@@ -29,6 +29,7 @@ from cappuccino.database.models import Base
 
 config = context.config
 bot = create_bot()
+bot.load_extensions()
 
 # add your model's MetaData object here
 # for 'autogenerate' support

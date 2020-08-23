@@ -13,11 +13,27 @@
 #  You should have received a copy of the GNU General Public License
 #  along with cappuccino-discord.  If not, see <https://www.gnu.org/licenses/>.
 
+import sentry_sdk
+from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
+
 from cappuccino import create_bot
 
 
+def init_sentry(bot):
+    dsn = bot.config.get('sentry', {}).get('dsn')
+    if not dsn:
+        bot.logger.debug('Missing Sentry DSN, sentry will not be used.')
+        return
+    else:
+        bot.logger.info('Sentry logging enabled.')
+        sentry_sdk.init(dsn, integrations=[SqlalchemyIntegration()])
+
+
 def main():
-    create_bot().run()
+    bot = create_bot()
+    init_sentry(bot)
+    bot.load_extensions()
+    bot.run()
 
 
 if __name__ == '__main__':

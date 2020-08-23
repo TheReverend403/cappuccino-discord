@@ -39,6 +39,7 @@ class Cappuccino(Bot):
 
         super().__init__(command_prefix=self.config.get('bot').get('command_prefix', '.'), *args, **kwargs)
 
+    def load_extensions(self):
         for extension in self.config.get('extensions', []):
             try:
                 self.load_extension(f'cappuccino.extensions.{extension}')
@@ -64,5 +65,5 @@ class Cappuccino(Bot):
         await self.invoke(ctx)
 
     def run(self, *args, **kwargs):
-        token = self.config.get('discord').get('token')
+        token = self.config.get('bot').get('token')
         super().run(token, *args, **kwargs)
