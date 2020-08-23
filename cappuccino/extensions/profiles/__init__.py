@@ -55,6 +55,8 @@ class Profiles(Extension):
     @humans_only
     @Cog.listener()
     async def on_user_update(self, before: User, after: User):
+        if before.name == after.name and before.discriminator == after.discriminator:
+            return
         self.update_user(after)
 
     @humans_only
