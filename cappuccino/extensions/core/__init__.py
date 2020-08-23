@@ -31,7 +31,7 @@
 import platform
 
 import discord
-from discord import Embed
+from discord import Color, Embed
 from discord.ext import commands
 
 from cappuccino.bot import Cappuccino
@@ -48,10 +48,12 @@ class Core(Extension):
         """Show version info."""
         python_version = platform.python_version()
         discord_version = discord.version_info
+        color = (254, 167, 71)  # Orange, FEA747
 
         embed = Embed(title='capuccino-discord',
                       url='https://github.com/FoxDev/cappuccino-discord',
-                      description='An experimental port of https://github.com/FoxDev/cappuccino')
+                      description='An experimental port of https://github.com/FoxDev/cappuccino',
+                      color=Color.from_rgb(*color))
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         embed.add_field(name='Version', value=self.bot.version, inline=False)
         embed.add_field(name='Python', value=python_version)
