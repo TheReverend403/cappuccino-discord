@@ -35,8 +35,7 @@ class Cappuccino(Bot):
         self.logger = logging.getLogger('cappuccino')
         self.config = config
         self.database = Database(self)
-        self.requests = requests.Session()
-        self.requests.headers.update({'User-Agent': f'cappuccino-discord ({self.version})'})
+        self.requests = aiohttp.ClientSession(headers={'User-Agent': f'cappuccino-discord ({self.version})'})
 
         super().__init__(command_prefix=self.config.get('bot').get('command_prefix', '.'), *args, **kwargs)
 

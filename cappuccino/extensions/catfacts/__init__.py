@@ -28,28 +28,31 @@ class Catfacts(Extension):
         super().__init__(bot, *args, **kwargs)
         self.cache = []
         self.limit = self.config.get('limit', 1000)
-        self.max_length = self.config.get('max_length', 200)
-        self.api_url = self.config.get(
-            'api_url', 'https://catfact.ninja/facts?limit={limit}&max_length={max_length}') \
-            .format(limit=self.limit, max_length=self.max_length)
+        self.max_length = self.config.get('max_length', 0)
+        self.api_url = self.config.get('api_url', f'https://catfact.ninja/facts?limit={self.limit}')
 
-    def get_fact(self):
+        if self.max_length > 0:
+            self.api_url += f'&max_length={self.max_length}'
+
+    async def get_fact(self):
         if len(self.cache) > 0:
             return self.cache.pop()
 
-        with self.bot.requests.get(self.api_url) as response:
+        async with self.bot.requests.get(self.api_url) as response:
             self.logger.debug('Fetching cat facts.')
-            self.cache = [fact['fact'] for fact in response.json()['data']]
+            self.cache = [fact['fact'] for fact in (await response.json())['data']]
+            self.logger.debug(f'Fetched {len(self.cache)} facts.')
             random.shuffle(self.cache)
-            return self.get_fact()
+            return await self.get_fact()
 
-    @commands.command(aliases=['cf'], brief='Get a random cat fact.')
+    @commands.command(aliases=['cf'])
     async def catfact(self, ctx: commands.Context):
+        """Get a random cat fact."""
         try:
             async with ctx.typing():
-                fact = self.get_fact()
+                fact = await self.get_fact()
             await ctx.send(fact)
-        except RequestException as exc:
+        except ClientError as exc:
             self.logger.exception(exc)
             await ctx.send(f'Something terrible happened while I was researching cat facts. Sorry. :(')
 
