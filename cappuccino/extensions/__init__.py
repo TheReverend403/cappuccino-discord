@@ -25,5 +25,5 @@ class Extension(Cog):
     def __init__(self, bot: Cappuccino, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.bot = bot
-        self.logger = logging.getLogger(f'cappuccino.extension.{self.qualified_name.lower()}')
+        self.logger = logging.getLogger(f'cappuccino.ext.{self.qualified_name.lower()}')
         self.config: dict = self.bot.config.get(f'extensions.{self.qualified_name.lower()}', {})
