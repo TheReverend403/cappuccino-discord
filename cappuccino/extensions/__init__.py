@@ -17,7 +17,7 @@ import logging
 
 from discord.ext.commands import Cog
 
-from cappuccino.bot import Cappuccino
+from cappuccino import Cappuccino
 
 
 class Extension(Cog):

@@ -19,7 +19,7 @@ import discord
 from discord import Color, Embed
 from discord.ext import commands
 
-from cappuccino.bot import Cappuccino
+from cappuccino import Cappuccino
 from cappuccino.extensions import Extension
 
 

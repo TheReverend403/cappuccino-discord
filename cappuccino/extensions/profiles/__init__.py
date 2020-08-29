@@ -20,7 +20,7 @@ from discord import Guild, Member, Message, User
 from discord.ext.commands.cog import Cog
 
 import cappuccino.extensions.profiles.models
-from cappuccino.bot import Cappuccino
+from cappuccino import Cappuccino
 from cappuccino.extensions import Extension
 
 

@@ -13,13 +13,69 @@
 #  You should have received a copy of the GNU General Public License
 #  along with cappuccino-discord.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
+import subprocess
+from collections import OrderedDict
 from logging.config import dictConfig
 
-from cappuccino.bot import Cappuccino
+import aiohttp
+from discord.ext import commands
+from discord.ext.commands import Bot, ExtensionError
+
 from cappuccino.config import BotConfig, LogConfig
+from cappuccino.database import Database
+
+
+def _get_version():
+    return subprocess.check_output(['git', 'describe']).decode('UTF-8').strip()
 
 
 def create_bot():
     dictConfig(LogConfig())
-    _bot = Cappuccino(BotConfig())
-    return _bot
+    bot = Cappuccino(BotConfig())
+    return bot
+
+
+class Cappuccino(Bot):
+
+    def __init__(self, config: BotConfig, *args, **kwargs):
+        self.version = _get_version()
+        self.logger = logging.getLogger('cappuccino')
+        self.config = config
+        self.database = Database(self)
+        self.requests = aiohttp.ClientSession(headers={'User-Agent': f'cappuccino-discord ({self.version})'})
+
+        super().__init__(command_prefix=self.config.get('bot').get('command_prefix', '.'), *args, **kwargs)
+
+    def load_extensions(self):
+        # Ensure core extensions are always forced to load before anything else regardless of user preference.
+        extensions = OrderedDict({'core': None, 'profiles': None})
+        extensions.update(self.config.get('extensions', {}))
+
+        for extension in extensions:
+            try:
+                self.load_extension(f'cappuccino.extensions.{extension}')
+            except ExtensionError as exc:
+                self.logger.exception(f'Error occurred while loading \'{extension}\': {exc}')
+            else:
+                self.logger.info(f'Enabled extension \'{extension}\'')
+
+    async def on_connect(self):
+        self.logger.info(f'Connected to Discord.')
+
+    async def on_ready(self):
+        self.logger.info(f'Logged in as {self.user} and ready to go to work.')
+
+    async def on_command_error(self, ctx, exception):
+        if isinstance(exception, commands.MissingRequiredArgument):
+            await ctx.send(f'{exception}')
+
+    # Override parent method to allow messages from other bots such as DiscordSRV.
+    # https://github.com/Rapptz/discord.py/issues/2238
+    async def process_commands(self, message):
+        ctx = await self.get_context(message)
+        await self.invoke(ctx)
+
+    def run(self, *args, **kwargs):
+        token = self.config.get('bot').get('token')
+        super().run(token, *args, **kwargs)
