@@ -16,13 +16,12 @@
 import logging
 import subprocess
 from collections import OrderedDict
-from logging.config import dictConfig
 
 import aiohttp
 from discord.ext import commands
 from discord.ext.commands import Bot, ExtensionError
 
-from cappuccino.config import BotConfig, LogConfig
+from cappuccino.config import BotConfig
 from cappuccino.database import Database
 
 
@@ -34,7 +33,6 @@ def _get_version():
 
 
 def create_bot():
-    dictConfig(dict(LogConfig()))
     bot = Cappuccino(BotConfig())
     return bot
 

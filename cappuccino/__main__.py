@@ -13,10 +13,12 @@
 #  You should have received a copy of the GNU General Public License
 #  along with cappuccino-discord.  If not, see <https://www.gnu.org/licenses/>.
 
+from logging.config import dictConfig
+
 import sentry_sdk
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
-from cappuccino import create_bot
+from cappuccino import LogConfig, create_bot
 
 
 def init_sentry(bot):
@@ -30,6 +32,7 @@ def init_sentry(bot):
 
 
 def main():
+    dictConfig(dict(LogConfig()))
     bot = create_bot()
     init_sentry(bot)
     bot.load_extensions()
