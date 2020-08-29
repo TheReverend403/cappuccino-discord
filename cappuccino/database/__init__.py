@@ -13,20 +13,9 @@
 #  You should have received a copy of the GNU General Public License
 #  along with cappuccino-discord.  If not, see <https://www.gnu.org/licenses/>.
 
-import logging
-
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 
 
-class Database(object):
-    bot = None
-
-    def __init__(self, bot, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.logger = logging.getLogger('cappuccino.database')
-        self.bot = bot
-        self.session = sessionmaker(bind=create_engine(self.bot.config.get('database.uri')))()
-
-    def __getattr__(self, name: str):
-        return getattr(self.session, name) or getattr(self, name)
+def get_session(uri: str) -> Session:
+    return sessionmaker(bind=create_engine(uri))()

@@ -16,12 +16,12 @@
 import logging
 import subprocess
 
-import aiohttp
+from aiohttp import ClientSession
 from discord.ext import commands
 from discord.ext.commands import Bot, ExtensionError
 
 from cappuccino.config import BotConfig
-from cappuccino.database import Database
+from cappuccino.database import get_session
 
 
 def _get_version():
@@ -38,12 +38,12 @@ def create_bot():
 
 class Cappuccino(Bot):
 
-    def __init__(self, config: BotConfig, *args, **kwargs):
+    def __init__(self, botconfig: BotConfig, *args, **kwargs):
         self.version = _get_version()
         self.logger = logging.getLogger('cappuccino')
-        self.config = config
-        self.database = Database(self)
-        self.requests = aiohttp.ClientSession(headers={'User-Agent': f'cappuccino-discord ({self.version})'})
+        self.config = botconfig
+        self.database = get_session(self.config.get('database.uri'))
+        self.requests = ClientSession(headers={'User-Agent': f'cappuccino-discord ({self.version})'})
 
         super().__init__(command_prefix=self.config.get('bot.command_prefix', '.'), *args, **kwargs)
 
