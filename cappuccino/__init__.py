@@ -24,6 +24,8 @@ from discord.ext.commands import Bot, ExtensionError
 from cappuccino.config import BotConfig, LogConfig
 from cappuccino.database import get_session
 
+dictConfig(dict(LogConfig()))
+
 
 def _get_version():
     try:
@@ -33,7 +35,6 @@ def _get_version():
 
 
 def create_bot():
-    dictConfig(dict(LogConfig()))
     bot = Cappuccino(BotConfig())
     return bot
 
