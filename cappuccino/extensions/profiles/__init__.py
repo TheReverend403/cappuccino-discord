@@ -103,13 +103,17 @@ class Profiles(Extension):
                 discriminator=user.discriminator
             )
 
-        if isinstance(user, Member) and user.nick is not None:
-            member = self.db.query(models.GuildMember).filter_by(guild_id=user.guild.id, user_id=user.id).first()
-            if not member:
-                member = models.GuildMember(user_id=user.id, guild_id=user.guild.id, nickname=user.nick)
-            else:
-                member.nickname = member.nickname
-            self.db.add(member)
+        if isinstance(user, Member):
+            guild_member = self.db.query(models.GuildMember).filter_by(guild_id=user.guild.id, user_id=user.id).first()
+
+            if guild_member:
+                if user.nick is None:
+                    self.db.delete(guild_member)
+                guild_member.nickname = user.nick
+            elif user.nick is not None:
+                guild_member = models.GuildMember(user_id=user.id, guild_id=user.guild.id, nickname=user.nick)
+                self.db.add(guild_member)
+
             self.logger.debug(f'set_nick({user}, {user.nick}, {user.guild.id})')
 
         self.db.add(user_model)
