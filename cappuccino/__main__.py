@@ -18,7 +18,8 @@ from logging.config import dictConfig
 import sentry_sdk
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
-from cappuccino import LogConfig, create_bot
+from cappuccino import create_bot
+from cappuccino.config import LogConfig
 
 
 def init_sentry(bot):
