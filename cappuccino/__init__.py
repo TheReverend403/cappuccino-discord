@@ -27,7 +27,10 @@ from cappuccino.database import Database
 
 
 def _get_version():
-    return subprocess.check_output(['git', 'describe']).decode('UTF-8').strip()
+    try:
+        return subprocess.check_output(['git', 'describe']).decode('UTF-8').strip()
+    except subprocess.CalledProcessError:
+        return 'cappuccino-discord'
 
 
 def create_bot():
