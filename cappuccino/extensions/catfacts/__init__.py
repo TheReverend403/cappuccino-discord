@@ -39,8 +39,8 @@ class Catfacts(Extension):
         if len(self.cache) > 0:
             return self.cache.pop()
 
+        self.logger.debug('Fetching cat facts.')
         async with self.bot.requests.get(self.api_url) as response:
-            self.logger.debug('Fetching cat facts.')
             self.cache = [fact['fact'] for fact in (await response.json())['data']]
             self.logger.debug(f'Fetched {len(self.cache)} facts.')
             random.shuffle(self.cache)
