@@ -96,27 +96,25 @@ class Profiles(Extension):
             if user_model.username != user.name or user_model.discriminator != user.discriminator:
                 user_model.username = user.name
                 user_model.discriminator = user.discriminator
+                self.logger.debug(f'update_user({user})')
         else:
             user_model = User(id=user.id, username=user.name, discriminator=user.discriminator)
             self.db.add(user_model)
-
-        if user_model in self.db.dirty:
-            self.logger.debug(f'update_user({user})')
+            self.logger.debug(f'create_user({user})')
 
         if isinstance(user, discord.Member):
             guild_member = self.db.query(GuildMember).filter_by(guild_id=user.guild.id, user_id=user.id).first()
 
             if guild_member:
                 if user.nick is None:
-                    self.logger.debug(f'set_nick({user}, None, {user.guild.id})')
                     self.db.delete(guild_member)
+                    self.logger.debug(f'del_nick({user}, {user.nick}, {user.guild.id})')
                 if guild_member.nickname != user.nick:
                     guild_member.nickname = user.nick
+                    self.logger.debug(f'update_nick({user}, {user.nick}, {user.guild.id})')
             elif user.nick is not None:
                 guild_member = GuildMember(user_id=user.id, guild_id=user.guild.id, nickname=user.nick)
                 self.db.add(guild_member)
-
-            if guild_member in self.db.dirty:
                 self.logger.debug(f'set_nick({user}, {user.nick}, {user.guild.id})')
 
         self.db.commit()
