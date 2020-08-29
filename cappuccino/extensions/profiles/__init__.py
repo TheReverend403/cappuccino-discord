@@ -108,9 +108,12 @@ class Profiles(Extension):
             if guild_member:
                 if user.nick is None:
                     self.db.delete(guild_member)
-                    self.logger.debug(f'del_nick({user}, {user.nick}, {user.guild.id})')
+                    self.logger.debug(f'del_nick({user}, {user.guild.id})')
+
                 if guild_member.nickname != user.nick:
                     guild_member.nickname = user.nick
+
+                if guild_member in self.db.dirty:
                     self.logger.debug(f'update_nick({user}, {user.nick}, {user.guild.id})')
             elif user.nick is not None:
                 guild_member = GuildMember(user_id=user.id, guild_id=user.guild.id, nickname=user.nick)
