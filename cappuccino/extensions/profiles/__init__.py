@@ -108,6 +108,7 @@ class Profiles(Extension):
 
             if guild_member:
                 if user.nick is None:
+                    self.logger.debug(f'set_nick({user}, None, {user.guild.id})')
                     self.db.delete(guild_member)
                 if guild_member.nickname != user.nick:
                     guild_member.nickname = user.nick
