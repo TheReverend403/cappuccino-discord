@@ -73,6 +73,9 @@ class Cappuccino(Bot):
     # Override parent method to allow messages from other bots such as DiscordSRV.
     # https://github.com/Rapptz/discord.py/issues/2238
     async def process_commands(self, message):
+        if self.config.get('bot.ignore_bots', False) and message.author.bot:
+            return
+
         ctx = await self.get_context(message)
         await self.invoke(ctx)
 
