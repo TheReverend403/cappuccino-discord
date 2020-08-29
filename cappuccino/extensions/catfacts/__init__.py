@@ -30,17 +30,18 @@ class Catfacts(Extension):
         self.cache = []
         self.limit = self.config.get('limit', 1000)
         self.max_length = self.config.get('max_length', 0)
-        self.api_url = self.config.get('api_url', f'https://catfact.ninja/facts?limit={self.limit}')
-
-        if self.max_length > 0:
-            self.api_url += f'&max_length={self.max_length}'
+        self.api_url = self.config.get('api_url', f'https://catfact.ninja/facts')
 
     async def get_fact(self):
         if len(self.cache) > 0:
             return self.cache.pop()
 
+        params = {'limit': self.limit}
+        if self.max_length > 0:
+            params.update({'max_length': self.max_length})
+
         self.logger.debug('Fetching cat facts.')
-        async with self.bot.requests.get(self.api_url) as response:
+        async with self.bot.requests.get(self.api_url, params=params) as response:
             self.cache = [fact['fact'] for fact in (await response.json())['data']]
             self.logger.debug(f'Fetched {len(self.cache)} facts.')
             random.shuffle(self.cache)
