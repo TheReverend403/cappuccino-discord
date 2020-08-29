@@ -18,15 +18,16 @@ import shutil
 import sys
 
 import yaml
+from dotty_dict import Dotty
 
 
-class YamlConfig(dict):
+class YamlConfig(Dotty):
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     config_dir = os.path.join(base_dir, 'config')
     resource_dir = os.path.join(base_dir, 'cappuccino', 'resources')
 
     def __init__(self, filename='config.yml', required=False):
-        super().__init__()
+        super().__init__(dictionary={})
 
         self.default_path = os.path.join(self.resource_dir, filename)
         self.local_path = os.path.join(self.config_dir, filename)

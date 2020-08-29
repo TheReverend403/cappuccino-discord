@@ -20,7 +20,7 @@ from cappuccino import create_bot
 
 
 def init_sentry(bot):
-    dsn = bot.config.get('sentry', {}).get('dsn')
+    dsn = bot.config.get('sentry.dsn')
     if not dsn:
         bot.logger.debug('Missing Sentry DSN, sentry will not be used.')
         return

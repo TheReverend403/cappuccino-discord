@@ -34,7 +34,7 @@ def _get_version():
 
 
 def create_bot():
-    dictConfig(LogConfig())
+    dictConfig(dict(LogConfig()))
     bot = Cappuccino(BotConfig())
     return bot
 
@@ -80,5 +80,5 @@ class Cappuccino(Bot):
         await self.invoke(ctx)
 
     def run(self, *args, **kwargs):
-        token = self.config.get('bot').get('token')
+        token = self.config.get('bot.token')
         super().run(token, *args, **kwargs)

@@ -26,7 +26,7 @@ class Database(object):
         super().__init__(*args, **kwargs)
         self.logger = logging.getLogger('cappuccino.database')
         self.bot = bot
-        self.session = sessionmaker(bind=create_engine(self.bot.config.get('database').get('uri')))()
+        self.session = sessionmaker(bind=create_engine(self.bot.config.get('database.uri')))()
 
     def __getattr__(self, name: str):
         return getattr(self.session, name) or getattr(self, name)

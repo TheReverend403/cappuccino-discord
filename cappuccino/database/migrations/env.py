@@ -76,7 +76,7 @@ def run_migrations_online():
 
     """
     config_section = config.get_section(config.config_ini_section)
-    config_section['sqlalchemy.url'] = bot.config.get('database', {}).get('uri')
+    config_section['sqlalchemy.url'] = bot.config.get('database.uri')
 
     connectable = engine_from_config(
         config_section,
