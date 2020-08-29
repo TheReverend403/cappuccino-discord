@@ -27,9 +27,9 @@ def init_sentry(bot):
     if not dsn:
         bot.logger.debug('Missing Sentry DSN, sentry will not be used.')
         return
-    else:
-        bot.logger.info('Sentry logging enabled.')
-        sentry_sdk.init(dsn, integrations=[SqlalchemyIntegration()], release=bot.version)
+
+    bot.logger.info('Sentry logging enabled.')
+    sentry_sdk.init(dsn, integrations=[SqlalchemyIntegration()], release=bot.version)
 
 
 def main():
