@@ -23,8 +23,8 @@ from cappuccino.extensions import Extension
 
 class Fun(Extension):
 
-    def __init__(self, bot: Cappuccino, *args, **kwargs):
-        super().__init__(bot, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @commands.command(aliases=['whatthecommit'])
     async def wtc(self, ctx: commands.Context):

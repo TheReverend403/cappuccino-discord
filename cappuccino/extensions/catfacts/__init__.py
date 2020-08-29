@@ -25,8 +25,8 @@ from cappuccino.extensions import Extension
 
 class Catfacts(Extension):
 
-    def __init__(self, bot: Cappuccino, *args, **kwargs):
-        super().__init__(bot, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.cache = []
         self.limit = self.config.get('limit', 1000)
         self.max_length = self.config.get('max_length', 0)

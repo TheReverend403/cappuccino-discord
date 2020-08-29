@@ -25,8 +25,8 @@ from cappuccino.extensions import Extension
 
 class Core(Extension):
 
-    def __init__(self, bot: Cappuccino, *args, **kwargs):
-        super().__init__(bot, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @commands.command(aliases=['bots', 'ver'])
     async def version(self, ctx: commands.Context):

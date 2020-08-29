@@ -39,8 +39,8 @@ def humans_only(func):
 
 class Profiles(Extension):
 
-    def __init__(self, bot: Cappuccino, *args, **kwargs):
-        super().__init__(bot, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.db = self.bot.database
 
     @Cog.listener()
