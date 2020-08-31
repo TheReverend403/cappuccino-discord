@@ -132,8 +132,7 @@ class Profiles(Extension):
             guild_model.description = guild_description
         else:
             guild_model = Guild(id=guild.id, name=guild_name, description=guild_description)
-
-        self.db.add(guild_model)
+            self.db.add(guild_model)
         self.db.commit()
 
 
