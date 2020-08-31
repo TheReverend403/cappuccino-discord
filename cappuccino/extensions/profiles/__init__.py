@@ -46,50 +46,50 @@ class Profiles(Extension):
     @Cog.listener()
     async def on_ready(self):
         for guild in self.bot.guilds:
-            self.update_guild(guild)
+            self.create_or_update_guild(guild)
             for member in guild.members:
                 if member.bot or member.system:
                     continue
-                self.update_user(member)
+                self.create_or_update_user(member)
 
     @humans_only
     @Cog.listener()
     async def on_user_update(self, before: discord.User, after: discord.User):
         if before.name == after.name and before.discriminator == after.discriminator:
             return
-        self.update_user(after)
+        self.create_or_update_user(after)
 
     @humans_only
     @Cog.listener()
     async def on_member_join(self, member: discord.Member):
-        self.update_user(member)
+        self.create_or_update_user(member)
 
     @humans_only
     @Cog.listener()
     async def on_member_update(self, before: discord.Member, after: discord.Member):
         if before.nick == after.nick:
             return
-        self.update_user(after)
+        self.create_or_update_user(after)
 
     @Cog.listener()
     async def on_guild_available(self, guild: discord.Guild):
-        self.update_guild(guild)
+        self.create_or_update_guild(guild)
 
     @Cog.listener()
     async def on_guild_join(self, guild: discord.Guild):
-        self.update_guild(guild)
+        self.create_or_update_guild(guild)
         for member in guild.members:
             if member.bot or member.system:
                 continue
-            self.update_user(member)
+            self.create_or_update_user(member)
 
     @Cog.listener()
     async def on_guild_update(self, before: discord.Guild, after: discord.Guild):
-        if before.name == after.name:
+        if before.name == after.name and before.description == after.description:
             return
-        self.update_guild(after)
+        self.create_or_update_guild(after)
 
-    def update_user(self, user: Type[discord.User]):
+    def create_or_update_user(self, user: Type[discord.User]):
         user_model = self.db.query(User).filter_by(id=user.id).first()
 
         if user_model:
@@ -122,7 +122,7 @@ class Profiles(Extension):
 
         self.db.commit()
 
-    def update_guild(self, guild: Guild):
+    def create_or_update_guild(self, guild: discord.Guild):
         guild_model = self.db.query(Guild).filter_by(id=guild.id).first()
         guild_name = guild.name
         guild_description = guild.description
