@@ -13,6 +13,7 @@ pyyaml = "^5.3"
 aiohttp = { version = "^3.6.2", extras=["speedups"] }
 sentry-sdk = "^0.17.0"
 dotty-dict = "^1.2.1"
+redis = {extras = ["hiredis"], version = "^3.5.3"}
 
 [tool.poetry.dev-dependencies]
 
