@@ -14,6 +14,7 @@
 #  along with cappuccino-discord.  If not, see <https://www.gnu.org/licenses/>.
 
 import sentry_sdk
+from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
 from cappuccino import create_bot
@@ -25,8 +26,8 @@ def init_sentry(bot):
         bot.logger.debug('Missing Sentry DSN, sentry will not be used.')
         return
 
+    sentry_sdk.init(dsn, integrations=[SqlalchemyIntegration(), RedisIntegration()], release=bot.version)
     bot.logger.info('Sentry logging enabled.')
-    sentry_sdk.init(dsn, integrations=[SqlalchemyIntegration()], release=bot.version)
 
 
 def main():
