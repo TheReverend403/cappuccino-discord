@@ -30,7 +30,8 @@ class Catfacts(Extension):
         super().__init__(*args, **kwargs)
         self.cache = self.bot.cache
         self.limit = self.config.get('limit', 1000)
-        self.max_length = self.config.get('max_length', 0)
+        self.max_length = self.config.get('max_length', 200)
+        self.cache_ttl = self.config.get('cache_ttl', 72)
         self.api_url = self.config.get('api_url', f'https://catfact.ninja/facts')
 
     async def get_fact(self):
@@ -43,10 +44,11 @@ class Catfacts(Extension):
 
         self.logger.debug('Fetching cat facts.')
         async with self.bot.requests.get(self.api_url, params=params) as response:
-            facts = [fact['fact'] for fact in (await response.json())['data']]
+            facts = await response.json()
+            facts = [fact['fact'] for fact in facts['data']]
             self.logger.debug(f'Fetched {len(facts)} facts.')
             self.cache.sadd(self._cache_key, *facts)
-            self.cache.expire(self._cache_key, timedelta(days=3))
+            self.cache.expire(self._cache_key, timedelta(hours=self.cache_ttl))
             return await self.get_fact()
 
     @commands.command(aliases=['cf'])

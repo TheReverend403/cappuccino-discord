@@ -3,17 +3,30 @@ bot:
   command_prefix: '.'
 
 database:
-  # https://docs.sqlalchemy.org/en/13/core/engines.html#postgresql
+  ## SQLAlchemy connection URL. Only PostgreSQL is *officially* supported.
+  ## https://docs.sqlalchemy.org/en/13/core/engines.html#postgresql
   uri: ''
 
-# Leave blank if you don't want to use sentry.
+redis:
+  ## https://redis-py.readthedocs.io/en/stable/#redis.ConnectionPool.from_url
+  uri: ''
+
+## Leave blank if you don't want to use sentry.
 sentry:
   dsn: ''
 
-# Plugins listed here will be loaded in order of appearance, child nodes are used as that plugin's configuration.
+## Plugins listed here will be loaded in order of appearance, child nodes are used as that plugin's configuration.
 extensions:
   fun:
   catfacts:
-    limit: 1000
-    # Set to 0 for no limit.
-    max_length: 0
+    ## Maximum amount of facts to cache at once. The actual amount of facts returned from the API may be lower than this.
+    # limit: 1000
+
+    ## Limit the maximum length in characters of individual facts. 0 or unset = no limit.
+    # max_length: 200
+
+    ## How long to cache API responses in hours.
+    # cache_ttl: 72
+
+    ## The URL facts are fetched from.
+    # api_url: https://catfact.ninja/facts
