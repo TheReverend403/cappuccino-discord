@@ -13,7 +13,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with cappuccino-discord.  If not, see <https://www.gnu.org/licenses/>.
 
-import random
+from datetime import timedelta
 
 from aiohttp import ClientError
 from discord.ext import commands
@@ -24,17 +24,18 @@ from cappuccino.extensions import Extension
 
 
 class Catfacts(Extension):
+    _cache_key = 'catfacts'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.cache = []
+        self.cache = self.bot.cache
         self.limit = self.config.get('limit', 1000)
         self.max_length = self.config.get('max_length', 0)
         self.api_url = self.config.get('api_url', f'https://catfact.ninja/facts')
 
     async def get_fact(self):
-        if len(self.cache) > 0:
-            return self.cache.pop()
+        if self.cache.scard(self._cache_key) > 0:
+            return self.cache.spop(self._cache_key)
 
         params = {'limit': self.limit}
         if self.max_length > 0:
@@ -42,9 +43,10 @@ class Catfacts(Extension):
 
         self.logger.debug('Fetching cat facts.')
         async with self.bot.requests.get(self.api_url, params=params) as response:
-            self.cache = [fact['fact'] for fact in (await response.json())['data']]
-            self.logger.debug(f'Fetched {len(self.cache)} facts.')
-            random.shuffle(self.cache)
+            facts = [fact['fact'] for fact in (await response.json())['data']]
+            self.logger.debug(f'Fetched {len(facts)} facts.')
+            self.cache.sadd(self._cache_key, *facts)
+            self.cache.expire(self._cache_key, timedelta(days=3))
             return await self.get_fact()
 
     @commands.command(aliases=['cf'])

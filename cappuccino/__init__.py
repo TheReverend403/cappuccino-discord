@@ -20,6 +20,8 @@ from logging.config import dictConfig
 from aiohttp import ClientSession
 from discord.ext import commands
 from discord.ext.commands import Bot, ExtensionError
+from redis import Redis
+from sqlalchemy.orm import Session
 
 from cappuccino.config import BotConfig, LogConfig
 from cappuccino.database import get_session
@@ -45,8 +47,9 @@ class Cappuccino(Bot):
         self.version = _get_version()
         self.logger = logging.getLogger('cappuccino')
         self.config = botconfig
-        self.database = get_session(self.config.get('database.uri'))
+        self.database: Session = get_session(self.config.get('database.uri'))
         self.requests = ClientSession(headers={'User-Agent': f'cappuccino-discord ({self.version})'})
+        self.cache: Redis = Redis.from_url(self.config.get('redis.uri'), decode_responses=True)
 
         super().__init__(command_prefix=self.config.get('bot.command_prefix', '.'), *args, **kwargs)
 
