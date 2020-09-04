@@ -21,7 +21,7 @@ from cappuccino.database.models import Base
 
 
 class Guild(Base):
-    __tablename__ = 'guilds'
+    __tablename__ = "guilds"
 
     id = Column(BigInteger, primary_key=True)
     name = Column(String, nullable=False)
@@ -29,30 +29,38 @@ class Guild(Base):
 
 
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = Column(BigInteger, primary_key=True)
     username = Column(String, nullable=False)
     discriminator = Column(String, nullable=False)
-    guild_members = relationship('Nickname', backref='user', lazy=False, cascade='all, delete')
-    profile_fields = relationship('ProfileField',
-                                  order_by='ProfileField.list_position', backref='user', cascade='all, delete',
-                                  collection_class=ordering_list('list_position', count_from=1))
+    guild_members = relationship(
+        "Nickname", backref="user", lazy=False, cascade="all, delete"
+    )
+    profile_fields = relationship(
+        "ProfileField",
+        order_by="ProfileField.list_position",
+        backref="user",
+        cascade="all, delete",
+        collection_class=ordering_list("list_position", count_from=1),
+    )
 
 
 class ProfileField(Base):
-    __tablename__ = 'user_profiles'
+    __tablename__ = "user_profiles"
 
-    user_id = Column(BigInteger, ForeignKey('users.id'), primary_key=True)
+    user_id = Column(BigInteger, ForeignKey("users.id"), primary_key=True)
     category = Column(String, primary_key=True)
     value = Column(String, primary_key=True)
     list_position = Column(Integer, nullable=False)
-    updated_at = Column(DateTime, nullable=False, server_default=func.now(), server_onupdate=func.now())
+    updated_at = Column(
+        DateTime, nullable=False, server_default=func.now(), server_onupdate=func.now()
+    )
 
 
 class Nickname(Base):
-    __tablename__ = 'user_nicks'
+    __tablename__ = "user_nicks"
 
-    user_id = Column(BigInteger, ForeignKey('users.id'), primary_key=True)
-    guild_id = Column(BigInteger, ForeignKey('guilds.id'), primary_key=True)
+    user_id = Column(BigInteger, ForeignKey("users.id"), primary_key=True)
+    guild_id = Column(BigInteger, ForeignKey("guilds.id"), primary_key=True)
     nickname = Column(String, primary_key=True)

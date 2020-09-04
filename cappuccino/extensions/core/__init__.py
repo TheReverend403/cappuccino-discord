@@ -24,26 +24,29 @@ from cappuccino.extensions import Extension
 
 
 class Core(Extension):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    @commands.command(aliases=['bots', 'ver'])
+    @commands.command(aliases=["bots", "ver"])
     async def version(self, ctx: commands.Context):
         """Show version info."""
         python_version = platform.python_version()
-        discord_version = discord.version_info
+        discord_major, discord_minor, discord_micro = discord.version_info
         color = (254, 167, 71)  # Orange, FEA747
 
-        embed = Embed(title='capuccino-discord',
-                      url='https://github.com/FoxDev/cappuccino-discord',
-                      description='An experimental port of https://github.com/FoxDev/cappuccino',
-                      color=Color.from_rgb(*color))
+        embed = Embed(
+            title="capuccino-discord",
+            url="https://github.com/FoxDev/cappuccino-discord",
+            description="An experimental port of https://github.com/FoxDev/cappuccino",
+            color=Color.from_rgb(*color),
+        )
         embed.set_thumbnail(url=self.bot.user.avatar_url)
-        embed.add_field(name='Version', value=self.bot.version, inline=False)
-        embed.add_field(name='Python', value=python_version)
-        embed.add_field(name='discord.py',
-                        value=f'{discord_version.major}.{discord_version.minor}.{discord_version.micro}')
+        embed.add_field(name="Version", value=self.bot.version, inline=False)
+        embed.add_field(name="Python", value=python_version)
+        embed.add_field(
+            name="discord.py",
+            value=f"{discord_major}.{discord_minor}.{discord_micro}",
+        )
 
         await ctx.send(embed=embed)
 

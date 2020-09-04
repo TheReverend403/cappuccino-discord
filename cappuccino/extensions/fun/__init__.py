@@ -22,20 +22,26 @@ from cappuccino.extensions import Extension
 
 
 class Fun(Extension):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    @commands.command(aliases=['whatthecommit'])
+    @commands.command(aliases=["whatthecommit"])
     async def wtc(self, ctx: commands.Context):
         """Get a random commit message from whatthecommit.com."""
         try:
-            async with ctx.typing(), self.bot.requests.get('http://whatthecommit.com/index.txt') as response:
+            async with ctx.typing(), self.bot.requests.get(
+                "http://whatthecommit.com/index.txt"
+            ) as response:
                 commit_message = escape_markdown((await response.text()).strip())
-            await ctx.send(f'{commit_message}')
+            await ctx.send(f"{commit_message}")
         except ClientError as exc:
-            self.logger.exception(f'Error fetching commit message: {exc}')
-            await ctx.send(f'Failed to get commit message. Why do you always have to break everything? e.e')
+            self.logger.exception(f"Error fetching commit message: {exc}")
+            await ctx.send(
+                (
+                    "Failed to get commit message. "
+                    "Why do you always have to break everything? e.e"
+                )
+            )
 
 
 def setup(bot: Cappuccino):

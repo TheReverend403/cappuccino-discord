@@ -21,13 +21,17 @@ from cappuccino import create_bot
 
 
 def init_sentry(bot):
-    dsn = bot.config.get('sentry.dsn')
+    dsn = bot.config.get("sentry.dsn")
     if not dsn:
-        bot.logger.debug('Missing Sentry DSN, sentry will not be used.')
+        bot.logger.debug("Missing Sentry DSN, sentry will not be used.")
         return
 
-    sentry_sdk.init(dsn, integrations=[SqlalchemyIntegration(), RedisIntegration()], release=bot.version)
-    bot.logger.info('Sentry logging enabled.')
+    sentry_sdk.init(
+        dsn,
+        integrations=[SqlalchemyIntegration(), RedisIntegration()],
+        release=bot.version,
+    )
+    bot.logger.info("Sentry logging enabled.")
 
 
 def main():
@@ -37,5 +41,5 @@ def main():
     bot.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

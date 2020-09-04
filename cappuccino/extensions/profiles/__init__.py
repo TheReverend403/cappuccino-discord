@@ -30,7 +30,9 @@ def humans_only(func):
     @functools.wraps(func)
     async def decorator(*args, **kwargs):
         for arg in args:
-            if isinstance(arg, discord.Message) and (arg.author.bot or arg.author.system):
+            if isinstance(arg, discord.Message) and (
+                arg.author.bot or arg.author.system
+            ):
                 return
         await func(*args, **kwargs)
 
@@ -38,7 +40,6 @@ def humans_only(func):
 
 
 class Profiles(Extension):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.db = self.bot.database
@@ -93,30 +94,43 @@ class Profiles(Extension):
         user_model = self.db.query(User).filter_by(id=user.id).first()
 
         if user_model:
-            if user_model.username != user.name or user_model.discriminator != user.discriminator:
+            if (
+                user_model.username != user.name
+                or user_model.discriminator != user.discriminator
+            ):
                 user_model.username = user.name
                 user_model.discriminator = user.discriminator
-                self.logger.debug(f'update_user({user})')
+                self.logger.debug(f"update_user({user})")
         else:
-            user_model = User(id=user.id, username=user.name, discriminator=user.discriminator)
+            user_model = User(
+                id=user.id, username=user.name, discriminator=user.discriminator
+            )
             self.db.add(user_model)
-            self.logger.debug(f'create_user({user})')
+            self.logger.debug(f"create_user({user})")
 
         if isinstance(user, discord.Member):
-            guild_member = self.db.query(Nickname).filter_by(guild_id=user.guild.id, user_id=user.id).first()
+            guild_member = (
+                self.db.query(Nickname)
+                .filter_by(guild_id=user.guild.id, user_id=user.id)
+                .first()
+            )
 
             if guild_member:
                 if user.nick is None:
                     self.db.delete(guild_member)
-                    self.logger.debug(f'del_nick({user}, {user.guild.id})')
+                    self.logger.debug(f"del_nick({user}, {user.guild.id})")
 
                 if guild_member.nickname != user.nick:
                     guild_member.nickname = user.nick
-                    self.logger.debug(f'update_nick({user}, {user.nick}, {user.guild.id})')
+                    self.logger.debug(
+                        f"update_nick({user}, {user.nick}, {user.guild.id})"
+                    )
             elif user.nick is not None:
-                guild_member = Nickname(user_id=user.id, guild_id=user.guild.id, nickname=user.nick)
+                guild_member = Nickname(
+                    user_id=user.id, guild_id=user.guild.id, nickname=user.nick
+                )
                 self.db.add(guild_member)
-                self.logger.debug(f'set_nick({user}, {user.nick}, {user.guild.id})')
+                self.logger.debug(f"set_nick({user}, {user.nick}, {user.guild.id})")
 
         self.db.commit()
 
@@ -129,7 +143,9 @@ class Profiles(Extension):
             guild_model.name = guild_name
             guild_model.description = guild_description
         else:
-            guild_model = Guild(id=guild.id, name=guild_name, description=guild_description)
+            guild_model = Guild(
+                id=guild.id, name=guild_name, description=guild_description
+            )
             self.db.add(guild_model)
         self.db.commit()
 

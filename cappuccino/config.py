@@ -21,18 +21,17 @@ import yaml
 from dotty_dict import Dotty
 
 BASE_DIR = Path.cwd()
-RESOURCE_ROOT = BASE_DIR / 'cappuccino' / 'resources'
-CONFIG_ROOT = BASE_DIR / 'config'
+RESOURCE_ROOT = BASE_DIR / "cappuccino" / "resources"
+CONFIG_ROOT = BASE_DIR / "config"
 
 EX_CONFIG = 78  # EX_CONFIG from sysexits.h
 
 
 class YamlConfig(Dotty):
-
-    def __init__(self, filename='config.yml', required=False):
+    def __init__(self, filename="config.yml", required=False):
         super().__init__(dictionary={})
 
-        self._default_path = RESOURCE_ROOT / 'config' / filename
+        self._default_path = RESOURCE_ROOT / "config" / filename
         self._path = CONFIG_ROOT / filename
 
         self._save_default(required=required)
@@ -40,20 +39,22 @@ class YamlConfig(Dotty):
 
     def _save_default(self, required=False):
         if not self._path.exists():
-            mkdir_args = {'parents': True, 'exist_ok': True}
+            mkdir_args = {"parents": True, "exist_ok": True}
             if self._path.is_dir():
                 self._path.mkdir(**mkdir_args)
             else:
                 self._path.parent.mkdir(**mkdir_args)
 
+            default_relative = self._default_path.relative_to(BASE_DIR)
+            relative = self._path.relative_to(BASE_DIR)
             try:
                 shutil.copy2(self._default_path, self._path)
-                print(f'Copied {self._default_path.relative_to(BASE_DIR)} to {self._path.relative_to(BASE_DIR)}')
+                print(f"Copied {default_relative} to {relative}")
             except FileNotFoundError:
                 return
 
             if required:
-                print(f'{self._path.relative_to(BASE_DIR)} requires configuration. Exiting now.')
+                print(f"{relative} requires configuration. Exiting now.")
                 sys.exit(EX_CONFIG)
 
     def load(self, exit_on_error=False):
@@ -64,24 +65,21 @@ class YamlConfig(Dotty):
             except (TypeError, FileNotFoundError):
                 pass
             except yaml.YAMLError as exc:
-                print(f'Error loading {config_file.relative_to(BASE_DIR)}: {exc}')
+                print(f"Error loading {config_file.relative_to(BASE_DIR)}: {exc}")
                 if exit_on_error:
                     sys.exit(EX_CONFIG)
 
 
 class LogConfig(YamlConfig):
-
     def __init__(self):
-        super().__init__('logging.yml')
+        super().__init__("logging.yml")
 
 
 class BotConfig(YamlConfig):
-
     def __init__(self):
-        super().__init__('config.yml', required=True)
+        super().__init__("config.yml", required=True)
 
 
 class ExtensionConfig(YamlConfig):
-
     def __init__(self, extension):
-        super().__init__(Path('extensions') / f'{extension.qualified_name.lower()}.yml')
+        super().__init__(Path("extensions") / f"{extension.qualified_name.lower()}.yml")

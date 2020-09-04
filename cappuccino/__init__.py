@@ -31,9 +31,9 @@ dictConfig(dict(LogConfig()))
 
 def _get_version():
     try:
-        return subprocess.check_output(['git', 'describe']).decode('UTF-8').strip()
+        return subprocess.check_output(["git", "describe"]).decode("UTF-8").strip()
     except subprocess.CalledProcessError:
-        return '0.5.0'
+        return "0.5.0"
 
 
 def create_bot():
@@ -42,48 +42,56 @@ def create_bot():
 
 
 class Cappuccino(Bot):
-
     def __init__(self, botconfig: BotConfig, *args, **kwargs):
         self.version = _get_version()
-        self.logger = logging.getLogger('cappuccino')
+        self.logger = logging.getLogger("cappuccino")
         self.config = botconfig
-        self.database: Session = get_session(self.config.get('database.uri'))
-        self.requests = ClientSession(headers={'User-Agent': f'cappuccino-discord ({self.version})'})
-        self.cache: Redis = Redis.from_url(self.config.get('redis.uri'), decode_responses=True)
+        self.database: Session = get_session(self.config.get("database.uri"))
+        self.requests = ClientSession(
+            headers={"User-Agent": f"cappuccino-discord ({self.version})"}
+        )
+        self.cache: Redis = Redis.from_url(
+            self.config.get("redis.uri"), decode_responses=True
+        )
 
-        super().__init__(command_prefix=self.config.get('bot.command_prefix', '.'), *args, **kwargs)
+        super().__init__(
+            command_prefix=self.config.get("bot.command_prefix", "."), *args, **kwargs
+        )
 
     def load_extensions(self):
-        # Ensure core extensions are always forced to load before anything else regardless of user preference.
-        extensions = ['core', 'profiles']
-        extensions.extend(self.config.get('extensions', []))
+        # Ensure core extensions are always forced to load
+        # before anything else regardless of user preference.
+        extensions = ["core", "profiles"]
+        extensions.extend(self.config.get("extensions", []))
 
         for extension in extensions:
             try:
-                self.load_extension(f'cappuccino.extensions.{extension}')
-                self.logger.info(f'Enabled extension \'{extension}\'')
+                self.load_extension(f"cappuccino.extensions.{extension}")
+                self.logger.info(f"Enabled extension '{extension}'")
             except ExtensionError as exc:
-                self.logger.exception(f'Error occurred while loading \'{extension}\': {exc}')
+                self.logger.exception(
+                    f"Error occurred while loading '{extension}': {exc}"
+                )
 
     async def on_connect(self):
-        self.logger.info(f'Connected to Discord.')
+        self.logger.info("Connected to Discord.")
 
     async def on_ready(self):
-        self.logger.info(f'Logged in as {self.user} and ready to go to work.')
+        self.logger.info(f"Logged in as {self.user} and ready to go to work.")
 
     async def on_command_error(self, ctx, exception):
         if isinstance(exception, commands.MissingRequiredArgument):
-            await ctx.send(f'{exception}')
+            await ctx.send(f"{exception}")
 
     # Override parent method to allow messages from other bots such as DiscordSRV.
     # https://github.com/Rapptz/discord.py/issues/2238
     async def process_commands(self, message):
-        if self.config.get('bot.ignore_bots', False) and message.author.bot:
+        if self.config.get("bot.ignore_bots", False) and message.author.bot:
             return
 
         ctx = await self.get_context(message)
         await self.invoke(ctx)
 
     def run(self, *args, **kwargs):
-        token = self.config.get('bot.token')
+        token = self.config.get("bot.token")
         super().run(token, *args, **kwargs)
