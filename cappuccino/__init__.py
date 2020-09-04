@@ -33,7 +33,7 @@ def _get_version():
     try:
         return subprocess.check_output(['git', 'describe']).decode('UTF-8').strip()
     except subprocess.CalledProcessError:
-        return 'cappuccino-discord'
+        return '0.5.0'
 
 
 def create_bot():
