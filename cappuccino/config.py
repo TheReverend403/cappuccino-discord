@@ -70,4 +70,4 @@ class BotConfig(YamlConfig):
 class ExtensionConfig(YamlConfig):
 
     def __init__(self, extension):
-        super().__init__(f'extensions/{extension.qualified_name.lower()}.yml')
+        super().__init__(os.path.join('extensions', f'{extension.qualified_name.lower()}.yml'))
