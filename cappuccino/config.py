@@ -13,7 +13,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with cappuccino-discord.  If not, see <https://www.gnu.org/licenses/>.
 
-import os
 import shutil
 import sys
 from pathlib import Path
@@ -61,8 +60,7 @@ class YamlConfig(Dotty):
         # Load files in order of default -> local.
         for config_file in [self._default_path, self._path]:
             try:
-                with config_file.open() as fd:
-                    self.update(yaml.safe_load(fd))
+                self.update(yaml.safe_load(config_file.read_text()))
             except (TypeError, FileNotFoundError):
                 pass
             except yaml.YAMLError as exc:
@@ -86,4 +84,4 @@ class BotConfig(YamlConfig):
 class ExtensionConfig(YamlConfig):
 
     def __init__(self, extension):
-        super().__init__(os.path.join('extensions', f'{extension.qualified_name.lower()}.yml'))
+        super().__init__(Path('extensions', f'{extension.qualified_name.lower()}.yml'))
