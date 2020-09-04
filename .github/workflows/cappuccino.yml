@@ -8,10 +8,9 @@ on:
 
 jobs:
   quality:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest]
         python-version: ['3.8']
     steps:
       - uses: actions/checkout@master
@@ -29,8 +28,8 @@ jobs:
         id: cache
         with:
           path: ~/.cache/pypoetry/virtualenvs
-          key: poetry-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
-          restore-keys: poetry-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+          key: poetry-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: poetry-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install Dependencies
         run: poetry install
