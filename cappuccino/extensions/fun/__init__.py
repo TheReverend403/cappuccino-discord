@@ -32,8 +32,9 @@ class Fun(Extension):
             async with ctx.typing(), self.bot.requests.get(
                 "http://whatthecommit.com/index.txt"
             ) as response:
-                commit_message = escape_markdown((await response.text()).strip())
-            await ctx.send(f"{commit_message}")
+                commit_message = await response.text()
+                commit_message = escape_markdown(commit_message.strip())
+            await ctx.send(commit_message)
         except ClientError as exc:
             self.logger.exception(f"Error fetching commit message: {exc}")
             await ctx.send(
