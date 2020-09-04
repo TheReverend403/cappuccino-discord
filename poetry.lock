@@ -567,6 +567,7 @@ multidict = ">=4.0"
 
 [metadata]
 content-hash = "f89f175731d7f7870696c15affd00ab44b4505b7a95b69d35d80287c96e9ca6e"
+lock-version = "1.0"
 python-versions = "^3.8"
 
 [metadata.files]
