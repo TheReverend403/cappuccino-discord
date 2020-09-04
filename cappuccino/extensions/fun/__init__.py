@@ -30,9 +30,8 @@ class Fun(Extension):
     async def wtc(self, ctx: commands.Context):
         """Get a random commit message from whatthecommit.com."""
         try:
-            async with ctx.typing():
-                async with self.bot.requests.get('http://whatthecommit.com/index.txt') as response:
-                    commit_message = escape_markdown((await response.text()).strip())
+            async with ctx.typing(), self.bot.requests.get('http://whatthecommit.com/index.txt') as response:
+                commit_message = escape_markdown((await response.text()).strip())
             await ctx.send(f'{commit_message}')
         except ClientError as exc:
             self.logger.exception(f'Error fetching commit message: {exc}')
