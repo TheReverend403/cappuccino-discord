@@ -81,7 +81,7 @@ class Cappuccino(Bot):
 
     async def on_command_error(self, ctx, exception):
         if isinstance(exception, commands.UserInputError):
-            await ctx.send({exception})
+            await ctx.send(exception)
             return
 
         raise exception
