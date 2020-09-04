@@ -62,7 +62,7 @@ class Catfacts(Extension):
             self.logger.exception(exc)
             await ctx.send(
                 (
-                    "Something terrible happened while I was researching cat facts."
+                    "Something terrible happened while I was researching cat facts. "
                     "Sorry. :("
                 )
             )
