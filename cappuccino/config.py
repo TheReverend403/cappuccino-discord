@@ -36,11 +36,12 @@ class YamlConfig(Dotty):
             os.makedirs(os.path.dirname(self.local_path), exist_ok=True)
             try:
                 shutil.copy2(self.default_path, self.local_path)
+                print(f'Created a default config file at {self.local_path}')
             except FileNotFoundError:
                 return
 
             if required:
-                print(f'A default {filename} has been created and must be configured.')
+                print(f'A default {os.path.basename(filename)} has been created and must be configured.')
                 sys.exit(0)
 
         # Load files in order of default -> local.
