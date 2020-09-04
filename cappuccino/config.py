@@ -22,24 +22,24 @@ from dotty_dict import Dotty
 
 
 class YamlConfig(Dotty):
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    config_dir = os.path.join(base_dir, 'config')
-    resource_dir = os.path.join(base_dir, 'cappuccino', 'resources')
+    _base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    _config_dir = os.path.join(_base_dir, 'config')
+    _resource_dir = os.path.join(_base_dir, 'cappuccino', 'resources', 'config')
 
     def __init__(self, filename='config.yml', required=False):
         super().__init__(dictionary={})
 
-        self.default_path = os.path.join(self.resource_dir, filename)
-        self.local_path = os.path.join(self.config_dir, filename)
+        self.default_path = os.path.join(self._resource_dir, filename)
+        self.local_path = os.path.join(self._config_dir, filename)
 
-        if not os.path.exists(f'{self.local_path}'):
+        if not os.path.exists(self.local_path):
+            os.makedirs(os.path.dirname(self.local_path), exist_ok=True)
             try:
-                os.mkdir(self.config_dir)
-            except FileExistsError:
-                pass
+                shutil.copy2(self.default_path, self.local_path)
+            except FileNotFoundError:
+                return
 
             if required:
-                shutil.copy2(self.default_path, self.local_path)
                 print(f'A default {filename} has been created and must be configured.')
                 sys.exit(0)
 
@@ -48,7 +48,7 @@ class YamlConfig(Dotty):
             try:
                 with open(config_file) as fd:
                     self.update(yaml.safe_load(fd))
-            except FileNotFoundError:
+            except (TypeError, FileNotFoundError):
                 pass
             except yaml.YAMLError as exc:
                 print(f'Error loading {config_file}: {exc}')
@@ -65,3 +65,9 @@ class BotConfig(YamlConfig):
 
     def __init__(self):
         super().__init__('config.yml', required=True)
+
+
+class ExtensionConfig(YamlConfig):
+
+    def __init__(self, extension):
+        super().__init__(f'extensions/{extension.qualified_name.lower()}.yml')

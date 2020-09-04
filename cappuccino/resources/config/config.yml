@@ -1,6 +1,8 @@
 bot:
   token: ''
   command_prefix: '.'
+  ## If true, other bots will be able to trigger commands.
+  # ignore_bots: false
 
 database:
   ## SQLAlchemy connection URL. Only PostgreSQL is *officially* supported.
@@ -17,16 +19,5 @@ sentry:
 
 ## Plugins listed here will be loaded in order of appearance, child nodes are used as that plugin's configuration.
 extensions:
-  fun:
-  catfacts:
-    ## Maximum amount of facts to cache at once. The actual amount of facts returned from the API may be lower than this.
-    # limit: 1000
-
-    ## Limit the maximum length in characters of individual facts. 0 or unset = no limit.
-    # max_length: 200
-
-    ## How long to cache API responses in hours.
-    # cache_ttl: 72
-
-    ## The URL facts are fetched from.
-    # api_url: https://catfact.ninja/facts
+  - fun
+  - catfacts

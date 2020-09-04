@@ -1,4 +1,3 @@
-# Override this file by copying it to ../../config/logging.yml
 version: 1
 root:
   level: INFO

@@ -18,6 +18,7 @@ import logging
 from discord.ext.commands import Cog
 
 from cappuccino import Cappuccino
+from cappuccino.config import ExtensionConfig
 
 
 class Extension(Cog):
@@ -26,4 +27,4 @@ class Extension(Cog):
         super().__init__(*args, **kwargs)
         self.bot = bot
         self.logger = logging.getLogger(f'cappuccino.ext.{self.qualified_name.lower()}')
-        self.config: dict = self.bot.config.get(f'extensions.{self.qualified_name.lower()}', {}) or {}
+        self.config = ExtensionConfig(self)

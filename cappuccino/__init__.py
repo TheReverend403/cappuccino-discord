@@ -55,8 +55,8 @@ class Cappuccino(Bot):
 
     def load_extensions(self):
         # Ensure core extensions are always forced to load before anything else regardless of user preference.
-        extensions = {'core': None, 'profiles': None}
-        extensions.update(self.config.get('extensions', {}))
+        extensions = ['core', 'profiles']
+        extensions.extend(self.config.get('extensions', []))
 
         for extension in extensions:
             try:
