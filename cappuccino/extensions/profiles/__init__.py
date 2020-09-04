@@ -21,7 +21,7 @@ from discord.ext.commands.cog import Cog
 
 from cappuccino import Cappuccino
 from cappuccino.extensions import Extension
-from .models import Guild, GuildMember, User
+from .models import Guild, Nickname, User
 
 
 def humans_only(func):
@@ -103,7 +103,7 @@ class Profiles(Extension):
             self.logger.debug(f'create_user({user})')
 
         if isinstance(user, discord.Member):
-            guild_member = self.db.query(GuildMember).filter_by(guild_id=user.guild.id, user_id=user.id).first()
+            guild_member = self.db.query(Nickname).filter_by(guild_id=user.guild.id, user_id=user.id).first()
 
             if guild_member:
                 if user.nick is None:
@@ -114,7 +114,7 @@ class Profiles(Extension):
                     guild_member.nickname = user.nick
                     self.logger.debug(f'update_nick({user}, {user.nick}, {user.guild.id})')
             elif user.nick is not None:
-                guild_member = GuildMember(user_id=user.id, guild_id=user.guild.id, nickname=user.nick)
+                guild_member = Nickname(user_id=user.id, guild_id=user.guild.id, nickname=user.nick)
                 self.db.add(guild_member)
                 self.logger.debug(f'set_nick({user}, {user.nick}, {user.guild.id})')
 

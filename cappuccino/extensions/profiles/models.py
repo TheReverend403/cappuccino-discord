@@ -34,14 +34,14 @@ class User(Base):
     id = Column(BigInteger, primary_key=True)
     username = Column(String, nullable=False)
     discriminator = Column(String, nullable=False)
-    guild_members = relationship('GuildMember', backref='user', lazy=False, cascade="all, delete")
-    profile_fields = relationship('UserProfileField',
-                                  order_by='UserProfileField.list_position', backref='user', cascade="all, delete",
+    guild_members = relationship('Nickname', backref='user', lazy=False, cascade='all, delete')
+    profile_fields = relationship('ProfileField',
+                                  order_by='ProfileField.list_position', backref='user', cascade='all, delete',
                                   collection_class=ordering_list('list_position', count_from=1))
 
 
-class UserProfileField(Base):
-    __tablename__ = 'user_profile_fields'
+class ProfileField(Base):
+    __tablename__ = 'user_profiles'
 
     user_id = Column(BigInteger, ForeignKey('users.id'), primary_key=True)
     category = Column(String, primary_key=True)
@@ -50,8 +50,8 @@ class UserProfileField(Base):
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), server_onupdate=func.now())
 
 
-class GuildMember(Base):
-    __tablename__ = 'guild_members'
+class Nickname(Base):
+    __tablename__ = 'user_nicks'
 
     user_id = Column(BigInteger, ForeignKey('users.id'), primary_key=True)
     guild_id = Column(BigInteger, ForeignKey('guilds.id'), primary_key=True)
