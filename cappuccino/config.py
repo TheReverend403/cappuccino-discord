@@ -25,6 +25,8 @@ BASE_DIR = Path.cwd()
 RESOURCE_ROOT = BASE_DIR / 'cappuccino' / 'resources'
 CONFIG_ROOT = BASE_DIR / 'config'
 
+EX_CONFIG = 78  # EX_CONFIG from sysexits.h
+
 
 class YamlConfig(Dotty):
 
@@ -39,20 +41,21 @@ class YamlConfig(Dotty):
 
     def _save_default(self, required=False):
         if not self._path.exists():
+            mkdir_args = {'parents': True, 'exist_ok': True}
             if self._path.is_dir():
-                self._path.mkdir(parents=True, exist_ok=True)
+                self._path.mkdir(**mkdir_args)
             else:
-                self._path.parent.mkdir(parents=True, exist_ok=True)
+                self._path.parent.mkdir(**mkdir_args)
 
             try:
                 shutil.copy2(self._default_path, self._path)
-                print(f'Created a default config file at {self._path}')
+                print(f'Copied {self._default_path.relative_to(BASE_DIR)} to {self._path.relative_to(BASE_DIR)}')
             except FileNotFoundError:
                 return
 
             if required:
-                print(f'A default {os.path.basename(self._path)} has been created and must be configured.')
-                sys.exit(0)
+                print(f'{self._path.relative_to(BASE_DIR)} requires configuration. Exiting now.')
+                sys.exit(EX_CONFIG)
 
     def load(self, exit_on_error=False):
         # Load files in order of default -> local.
@@ -63,9 +66,9 @@ class YamlConfig(Dotty):
             except (TypeError, FileNotFoundError):
                 pass
             except yaml.YAMLError as exc:
-                print(f'Error loading {config_file}: {exc}')
+                print(f'Error loading {config_file.relative_to(BASE_DIR)}: {exc}')
                 if exit_on_error:
-                    sys.exit(78)  # EX_CONFIG from sysexits.h
+                    sys.exit(EX_CONFIG)
 
 
 class LogConfig(YamlConfig):
