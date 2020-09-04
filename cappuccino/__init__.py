@@ -80,8 +80,11 @@ class Cappuccino(Bot):
         self.logger.info(f"Logged in as {self.user} and ready to go to work.")
 
     async def on_command_error(self, ctx, exception):
-        if isinstance(exception, commands.MissingRequiredArgument):
-            await ctx.send(f"{exception}")
+        if isinstance(exception, commands.UserInputError):
+            await ctx.send({exception})
+            return
+
+        raise exception
 
     # Override parent method to allow messages from other bots such as DiscordSRV.
     # https://github.com/Rapptz/discord.py/issues/2238
