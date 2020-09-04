@@ -73,7 +73,7 @@ class LogConfig(YamlConfig):
         super().__init__("logging.yml")
 
 
-class BotConfig(YamlConfig):
+class Config(YamlConfig):
     def __init__(self):
         super().__init__("config.yml", required=True)
 

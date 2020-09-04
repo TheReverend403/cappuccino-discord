@@ -23,7 +23,7 @@ from discord.ext.commands import Bot, ExtensionError
 from redis import Redis
 from sqlalchemy.orm import Session
 
-from cappuccino.config import BotConfig, LogConfig
+from cappuccino.config import Config, LogConfig
 from cappuccino.database import get_session
 
 dictConfig(dict(LogConfig()))
@@ -37,12 +37,12 @@ def _get_version():
 
 
 def create_bot():
-    bot = Cappuccino(BotConfig())
+    bot = Cappuccino(Config())
     return bot
 
 
 class Cappuccino(Bot):
-    def __init__(self, botconfig: BotConfig, *args, **kwargs):
+    def __init__(self, botconfig: Config, *args, **kwargs):
         self.version = _get_version()
         self.logger = logging.getLogger("cappuccino")
         self.config = botconfig
