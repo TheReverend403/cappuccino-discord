@@ -24,8 +24,6 @@ BASE_DIR = Path.cwd()
 RESOURCE_ROOT = BASE_DIR / "cappuccino" / "resources"
 CONFIG_ROOT = BASE_DIR / "config"
 
-EX_CONFIG = 78  # EX_CONFIG from sysexits.h
-
 
 class YamlConfig(Dotty):
     def __init__(self, filename="config.yml", required=False):
@@ -55,7 +53,7 @@ class YamlConfig(Dotty):
 
             if required:
                 print(f"{relative} requires configuration. Exiting now.")
-                sys.exit(EX_CONFIG)
+                sys.exit(1)
 
     def load(self, exit_on_error=False):
         # Load files in order of default -> local.
@@ -67,7 +65,7 @@ class YamlConfig(Dotty):
             except yaml.YAMLError as exc:
                 print(f"Error loading {config_file.relative_to(BASE_DIR)}: {exc}")
                 if exit_on_error:
-                    sys.exit(EX_CONFIG)
+                    sys.exit(1)
 
 
 class LogConfig(YamlConfig):
