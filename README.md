@@ -32,6 +32,10 @@ Optional: Install [the included unit file](cappuccino/resources/cappuccino-disco
 ## Developers
 [pre-commit](https://pre-commit.com/) is used for formatting and PEP 8 compliance checks.
 
-Install this repo's pre-commit hooks with `pre-commit install`
+These checks must pass in order to make a commit to `master`. To install and use the hooks, run the following commands:
 
-All commits must pass `pre-commit run --all-files`
+```shell script
+poetry shell # If you're not already in the poetry env.
+pre-commit install
+pre-commit run --all-files # or just make a commit to run checks automatically.
+```
