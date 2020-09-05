@@ -1,0 +1,17 @@
+[Unit]
+Description=cappuccino Discord bot
+After=network-online.target redis.service postgresql.service
+
+[Service]
+User=cappuccino-discord
+SyslogIdentifier=cappuccino-discord
+ExecStart=/usr/local/bin/poetry run python -m cappuccino
+Restart=always
+WorkingDirectory=/opt/cappuccino-discord
+ProtectSystem=full
+ProtectHome=true
+ProtectControlGroups=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
