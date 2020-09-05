@@ -35,8 +35,8 @@ class Fun(Extension):
                 commit_message = await response.text()
                 commit_message = escape_markdown(commit_message.strip())
             await ctx.send(commit_message)
-        except ClientError as exc:
-            self.logger.exception(f"Error fetching commit message: {exc}")
+        except ClientError:
+            self.logger.exception("Error fetching commit message.")
             await ctx.send(
                 "Failed to get commit message. Why do you always break everything? e.e"
             )

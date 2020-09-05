@@ -31,7 +31,7 @@ class Core(Extension):
     async def version(self, ctx: commands.Context):
         """Show version info."""
         python_version = platform.python_version()
-        discord_major, discord_minor, discord_micro = discord.version_info
+        discord_major, discord_minor, discord_micro, _, _ = discord.version_info
         color = (254, 167, 71)  # Orange, FEA747
 
         embed = Embed(

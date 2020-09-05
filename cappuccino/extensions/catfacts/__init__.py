@@ -58,8 +58,8 @@ class Catfacts(Extension):
             async with ctx.typing():
                 fact = await self.get_fact()
             await ctx.send(escape_markdown(fact))
-        except ClientError as exc:
-            self.logger.exception(exc)
+        except ClientError:
+            self.logger.exception("Error fetching cat facts.")
             await ctx.send(
                 "Something went wrong while I was researching cat facts. Sorry. :("
             )

@@ -18,6 +18,7 @@ import subprocess
 from logging.config import dictConfig
 
 from aiohttp import ClientSession
+from discord import ChannelType
 from discord.ext import commands
 from discord.ext.commands import Bot, ExtensionError
 from redis import Redis
@@ -68,10 +69,8 @@ class Cappuccino(Bot):
             try:
                 self.load_extension(f"cappuccino.extensions.{extension}")
                 self.logger.info(f"Enabled extension '{extension}'")
-            except ExtensionError as exc:
-                self.logger.exception(
-                    f"Error occurred while loading '{extension}': {exc}"
-                )
+            except ExtensionError:
+                self.logger.exception(f"Error occurred while loading '{extension}'")
 
     async def on_connect(self):
         self.logger.info("Connected to Discord.")
@@ -79,12 +78,44 @@ class Cappuccino(Bot):
     async def on_ready(self):
         self.logger.info(f"Logged in as {self.user} and ready to go to work.")
 
-    async def on_command_error(self, ctx, exception):
-        if isinstance(exception, commands.UserInputError):
-            await ctx.send(exception)
+    async def on_command_error(self, ctx: commands.Context, error):
+
+        if hasattr(ctx.command, "on_error"):
             return
 
-        raise exception
+        cog = ctx.cog
+        if cog and cog._get_overridden_method(cog.cog_command_error) is not None:
+            return
+
+        error = getattr(error, "original", error)
+
+        if isinstance(error, commands.UserInputError):
+            await ctx.send(str(error))
+            return
+
+        if isinstance(error, commands.CommandNotFound):
+            return
+
+        log_context = {
+            "user": str(ctx.author),
+        }
+
+        if ctx.message.content:
+            log_context.update({"content": ctx.message.content})
+
+        if ctx.guild:
+            log_context.update(
+                {"source": {"guild": str(ctx.guild), "channel": str(ctx.channel)}}
+            )
+
+        if ctx.channel.type in [ChannelType.private, ChannelType.group]:
+            log_context.update({"source": str(ctx.channel)})
+
+        self.logger.exception(
+            f"{type(error).__name__}: {str(error)}",
+            exc_info=error,
+            extra=log_context,
+        )
 
     # Override parent method to allow messages from other bots such as DiscordSRV.
     # https://github.com/Rapptz/discord.py/issues/2238
