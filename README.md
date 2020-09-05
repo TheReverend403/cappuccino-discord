@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://static.foxdev.co/img/catpuccino_alpha_128.png">
+<img src="cappuccino/resources/logo.png">
 </p>
 
 <h1 align="center">cappuccino-discord</h1>
