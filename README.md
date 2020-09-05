@@ -1,11 +1,19 @@
-# cappuccino-discord
+<p align="center">
+<img src="https://static.foxdev.co/img/catpuccino_alpha_128.png">
+</p>
 
-[![GitHub](https://img.shields.io/github/license/FoxDev/cappuccino-discord?style=flat-square)](LICENSE)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/FoxDev/cappuccino-discord/ci?style=flat-square)](https://github.com/FoxDev/cappuccino-discord/actions)
-[![Requires.io](https://img.shields.io/requires/github/FoxDev/cappuccino-discord?style=flat-square)](https://requires.io/github/FoxDev/cappuccino-discord/requirements)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/psf/black)
+<h1 align="center">cappuccino-discord</h1>
 
-Nothing fancy, just an experimental Discord port of [cappuccino](https://github.com/FoxDev/cappuccino) for fun.
+<p align="center">
+<a href="LICENSE"><img src="https://img.shields.io/github/license/FoxDev/cappuccino-discord?style=flat-square" alt="GitHub"></a>
+<a href="https://github.com/FoxDev/cappuccino-discord/actions"><img src="https://img.shields.io/github/workflow/status/FoxDev/cappuccino-discord/ci?style=flat-square" alt="GitHub Workflow Status"></a>
+<a href="https://requires.io/github/FoxDev/cappuccino-discord/requirements"><img src="https://img.shields.io/requires/github/FoxDev/cappuccino-discord?style=flat-square" alt="Requires.io"></a>
+<a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square" alt="Code style: black"></a>
+</p>
+
+<p align="center">
+Nothing fancy, just an experimental Discord port of <a href="https://github.com/FoxDev/cappuccino">cappuccino</a> for fun.
+</p>
 
 ## Installation
 
