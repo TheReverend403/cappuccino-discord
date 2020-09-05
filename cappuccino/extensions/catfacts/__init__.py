@@ -61,10 +61,7 @@ class Catfacts(Extension):
         except ClientError as exc:
             self.logger.exception(exc)
             await ctx.send(
-                (
-                    "Something terrible happened while I was researching cat facts. "
-                    "Sorry. :("
-                )
+                "Something went wrong while I was researching cat facts. Sorry. :("
             )
 
 

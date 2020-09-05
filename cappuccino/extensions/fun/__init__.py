@@ -38,10 +38,7 @@ class Fun(Extension):
         except ClientError as exc:
             self.logger.exception(f"Error fetching commit message: {exc}")
             await ctx.send(
-                (
-                    "Failed to get commit message. "
-                    "Why do you always have to break everything? e.e"
-                )
+                "Failed to get commit message. Why do you always break everything? e.e"
             )
 
 
