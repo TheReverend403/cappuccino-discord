@@ -32,6 +32,7 @@ poetry shell
 python -m cappuccino
 # Configure the bot with the newly created configs.
 # then...
+alembic upgrade head
 python -m cappuccino
 ```
 
