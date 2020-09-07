@@ -18,9 +18,20 @@ import platform
 import discord
 from discord import Color, Embed
 from discord.ext import commands
+from discord.ext.commands import (
+    is_owner,
+    ExtensionError,
+    ExtensionNotLoaded,
+    ExtensionNotFound,
+    ExtensionAlreadyLoaded,
+)
 
 from cappuccino import Cappuccino
 from cappuccino.extensions import Extension
+
+ERROR_PREFIX = "🔴"
+SUCCESS_PREFIX = "🟢"
+EXTENSION_MODULE_PREFIX = "cappuccino.extensions"
 
 
 class Core(Extension):
@@ -49,6 +60,43 @@ class Core(Extension):
         )
 
         await ctx.send(embed=embed)
+
+    @commands.command()
+    @is_owner()
+    async def unload(self, ctx: commands.Context, extension: str):
+        try:
+            self.bot.unload_extension(f"{EXTENSION_MODULE_PREFIX}.{extension}")
+            await ctx.send(f"{SUCCESS_PREFIX} Unloaded **{extension}**.")
+        except ExtensionNotLoaded:
+            await ctx.send(f"{ERROR_PREFIX} **{extension}** is already unloaded.")
+
+    @commands.command()
+    @is_owner()
+    async def load(self, ctx: commands.Context, extension: str):
+        try:
+            self.bot.load_extension(f"{EXTENSION_MODULE_PREFIX}.{extension}")
+            await ctx.send(f"{SUCCESS_PREFIX} Loaded **{extension}**.")
+        except ExtensionNotFound:
+            await ctx.send(f"{ERROR_PREFIX} Could not find **{extension}**.")
+        except ExtensionAlreadyLoaded:
+            await ctx.send(f"{ERROR_PREFIX} **{extension}** is already loaded.")
+        except ExtensionError as exc:
+            self.logger.exception(exc)
+            await ctx.send(f"{ERROR_PREFIX} Failed to load **{extension}**: {exc}")
+
+    @commands.command()
+    @is_owner()
+    async def reload(self, ctx: commands.Context, extension: str):
+        try:
+            self.bot.reload_extension(f"{EXTENSION_MODULE_PREFIX}.{extension}")
+            await ctx.send(f"{SUCCESS_PREFIX} **{extension}** reloaded successfully.")
+        except ExtensionNotFound:
+            await ctx.send(f"{ERROR_PREFIX} Could not find **{extension}**.")
+        except ExtensionNotLoaded:
+            await ctx.send(f"{ERROR_PREFIX} **{extension}** is not loaded.")
+        except ExtensionError as exc:
+            self.logger.exception(exc)
+            await ctx.send(f"{ERROR_PREFIX} Failed to reload **{extension}**.: {exc}")
 
 
 def setup(bot: Cappuccino):

@@ -80,9 +80,23 @@ class Cappuccino(Bot):
         for extension in extensions:
             try:
                 self.load_extension(f"cappuccino.extensions.{extension}")
-                self.logger.info(f"Enabled extension '{extension}'")
             except ExtensionError as exc:
                 self.logger.error(exc)
+
+    def reload_extension(self, name):
+        super().reload_extension(name)
+        name = name.split(".")[-1]
+        self.logger.info(f"Reloaded extension '{name}'")
+
+    def unload_extension(self, name):
+        super().unload_extension(name)
+        name = name.split(".")[-1]
+        self.logger.info(f"Unloaded extension '{name}'")
+
+    def load_extension(self, name):
+        super().load_extension(name)
+        name = name.split(".")[-1]
+        self.logger.info(f"Loaded extension '{name}'")
 
     async def on_connect(self):
         self.logger.info("Connected to Discord.")
