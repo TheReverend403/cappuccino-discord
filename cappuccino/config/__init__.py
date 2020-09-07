@@ -60,13 +60,10 @@ class YamlConfig(Dotty):
 
     def load(self, exit_on_error=False):
         # Load files in order of default -> local.
-        if not self.file_path.exists():
-            return
-
         for config_file in [self.default_file_path, self.file_path]:
             try:
                 self.update(yaml.safe_load(config_file.read_text()))
-            except TypeError:
+            except (TypeError, FileNotFoundError):
                 pass
             except yaml.YAMLError as exc:
                 print(f"Error loading {config_file.relative_to(Path.cwd())}: {exc}")
