@@ -18,6 +18,7 @@ from datetime import timedelta
 from aiohttp import ClientError
 from discord.ext import commands
 from discord.utils import escape_markdown
+from redis import RedisError
 
 from cappuccino import Cappuccino
 from cappuccino.extensions import Extension
@@ -58,7 +59,7 @@ class Catfacts(Extension):
             async with ctx.typing():
                 fact = await self.get_fact()
             await ctx.send(escape_markdown(fact))
-        except ClientError:
+        except (ClientError, RedisError):
             self.logger.exception("Error fetching cat facts.")
             await ctx.send(
                 "Something went wrong while I was researching cat facts. Sorry. :("
