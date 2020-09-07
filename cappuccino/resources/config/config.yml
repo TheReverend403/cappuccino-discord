@@ -1,7 +1,7 @@
 bot:
   token: ''
   command_prefix: '.'
-  ## If true, other bots will be able to trigger commands.
+  ## If true, other bots will not be able to trigger commands.
   # ignore_bots: false
 
 database:
