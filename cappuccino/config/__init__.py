@@ -20,22 +20,27 @@ from pathlib import Path
 import yaml
 from dotty_dict import Dotty
 
-BASE_DIR = Path(__file__).parent.parent  # ../../
-RESOURCE_ROOT = BASE_DIR / "cappuccino" / "resources"
-CONFIG_ROOT = BASE_DIR / "config"
+from config.errors import NotConfiguredError
+
+BASE_DIR = Path(__file__).parent.parent
+RESOURCE_ROOT = BASE_DIR / "resources"
+CONFIG_ROOT = BASE_DIR.parent / "config"
 
 
 class YamlConfig(Dotty):
+
+    required_keys = []
+
     def __init__(self, filename="config.yml", required=False):
         super().__init__(dictionary={})
 
         self._default_path = RESOURCE_ROOT / "config" / filename
         self.path = CONFIG_ROOT / filename
 
-        self._save_default(required=required)
+        self.save_default(required=required)
         self.load(exit_on_error=True)
 
-    def _save_default(self, required=False):
+    def save_default(self, required=False):
         if not self.path.exists():
             mkdir_args = {"parents": True, "exist_ok": True}
             if self.path.is_dir():
@@ -43,8 +48,8 @@ class YamlConfig(Dotty):
             else:
                 self.path.parent.mkdir(**mkdir_args)
 
-            default_relative = self._default_path.relative_to(BASE_DIR)
-            relative = self.path.relative_to(BASE_DIR)
+            default_relative = self._default_path.relative_to(Path.cwd())
+            relative = self.path.relative_to(Path.cwd())
             try:
                 shutil.copy2(self._default_path, self.path)
                 print(f"Copied {default_relative} to {relative}")
@@ -57,15 +62,24 @@ class YamlConfig(Dotty):
 
     def load(self, exit_on_error=False):
         # Load files in order of default -> local.
+        if not self._default_path.exists():
+            return
+
         for config_file in [self._default_path, self.path]:
             try:
                 self.update(yaml.safe_load(config_file.read_text()))
-            except (TypeError, FileNotFoundError):
+            except TypeError:
                 pass
             except yaml.YAMLError as exc:
                 print(f"Error loading {config_file.relative_to(BASE_DIR)}: {exc}")
                 if exit_on_error:
                     sys.exit(1)
+
+        for key in self.required_keys:
+            if not self.get(key):
+                raise NotConfiguredError(
+                    f"Missing required configuration option '{key}'"
+                )
 
 
 class LogConfig(YamlConfig):
@@ -74,6 +88,8 @@ class LogConfig(YamlConfig):
 
 
 class Config(YamlConfig):
+    required_keys = ["bot.token", "bot.command_prefix", "redis.uri", "database.uri"]
+
     def __init__(self):
         super().__init__("config.yml", required=True)
 
