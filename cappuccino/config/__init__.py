@@ -71,10 +71,14 @@ class YamlConfig(Dotty):
                     sys.exit(1)
 
         missing_keys = []
+        checked_types = [str, int, dict]
         for key in self._required_keys:
             value = self.get(key)
-            if value is None or not str(value):
-                missing_keys.append(key)
+            for checked_type in checked_types:
+                if value is None or (
+                    type(value) is checked_type and not checked_type(value)
+                ):
+                    missing_keys.append(key)
 
         if not missing_keys:
             return
