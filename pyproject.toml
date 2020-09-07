@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cappuccino-discord"
-version = "0.6.0"
+version = "0.6.1"
 description = ""
 authors = ["Lee Watson <rev@revthefox.co.uk>"]
 

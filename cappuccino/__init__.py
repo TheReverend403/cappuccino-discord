@@ -36,7 +36,7 @@ def _get_version():
     try:
         return subprocess.check_output(["git", "describe"]).decode("UTF-8").strip()
     except subprocess.CalledProcessError:
-        return "0.6.0"
+        return "0.6.1"
 
 
 def create_bot():
