@@ -64,6 +64,7 @@ class Core(Extension):
     @commands.command()
     @is_owner()
     async def unload(self, ctx: commands.Context, extension: str):
+        """Unload an extension."""
         try:
             self.bot.unload_extension(f"{EXTENSION_MODULE_PREFIX}.{extension}")
             await ctx.send(f"{SUCCESS_PREFIX} Unloaded **{extension}**.")
@@ -73,6 +74,7 @@ class Core(Extension):
     @commands.command()
     @is_owner()
     async def load(self, ctx: commands.Context, extension: str):
+        """Load an extension."""
         try:
             self.bot.load_extension(f"{EXTENSION_MODULE_PREFIX}.{extension}")
             await ctx.send(f"{SUCCESS_PREFIX} Loaded **{extension}**.")
@@ -87,6 +89,7 @@ class Core(Extension):
     @commands.command()
     @is_owner()
     async def reload(self, ctx: commands.Context, extension: str):
+        """Reload an extension."""
         try:
             self.bot.reload_extension(f"{EXTENSION_MODULE_PREFIX}.{extension}")
             await ctx.send(f"{SUCCESS_PREFIX} **{extension}** reloaded successfully.")
