@@ -112,7 +112,7 @@ class Cappuccino(Bot):
             log_context.update({"source": str(ctx.channel)})
 
         self.logger.exception(
-            f"{type(error).__name__}: {str(error)}",
+            error,
             exc_info=error,
             extra=log_context,
         )
