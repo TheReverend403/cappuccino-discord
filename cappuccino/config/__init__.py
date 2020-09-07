@@ -28,72 +28,86 @@ CONFIG_ROOT = BASE_DIR.parent / "config"
 
 
 class YamlConfig(Dotty):
-
-    required_keys = []
-
-    def __init__(self, filename="config.yml", required=False):
+    def __init__(self, filename="config.yml", required=False, required_keys=None):
         super().__init__(dictionary={})
 
-        self._default_path = RESOURCE_ROOT / "config" / filename
-        self.path = CONFIG_ROOT / filename
+        if required_keys is None:
+            required_keys = []
 
-        self.save_default(required=required)
-        self.load(exit_on_error=True)
+        self._required = required
+        self._required_keys = required_keys
+        self.default_file_path = RESOURCE_ROOT / "config" / filename
+        self.file_path = CONFIG_ROOT / filename
 
-    def save_default(self, required=False):
-        if not self.path.exists():
-            mkdir_args = {"parents": True, "exist_ok": True}
-            if self.path.is_dir():
-                self.path.mkdir(**mkdir_args)
-            else:
-                self.path.parent.mkdir(**mkdir_args)
+    def save_default(self):
+        if not self.default_file_path.exists() or self.file_path.exists():
+            return
 
-            default_relative = self._default_path.relative_to(Path.cwd())
-            relative = self.path.relative_to(Path.cwd())
-            try:
-                shutil.copy2(self._default_path, self.path)
-                print(f"Copied {default_relative} to {relative}")
-            except FileNotFoundError:
-                return
+        mkdir_args = {"parents": True, "exist_ok": True}
+        if self.file_path.is_dir():
+            self.file_path.mkdir(**mkdir_args)
+        else:
+            self.file_path.parent.mkdir(**mkdir_args)
 
-            if required:
-                print(f"{relative} requires configuration. Exiting now.")
-                sys.exit(1)
+        default_relative_path = self.default_file_path.relative_to(Path.cwd())
+        relative_path = self.file_path.relative_to(Path.cwd())
+        shutil.copy2(self.default_file_path, self.file_path)
+        print(f"Copied {default_relative_path} to {relative_path}")
+
+        if self._required:
+            print(f"{relative_path} requires configuration. Exiting now.")
+            sys.exit(1)
 
     def load(self, exit_on_error=False):
         # Load files in order of default -> local.
-        if not self._default_path.exists():
+        if not self.file_path.exists():
             return
 
-        for config_file in [self._default_path, self.path]:
+        for config_file in [self.default_file_path, self.file_path]:
             try:
                 self.update(yaml.safe_load(config_file.read_text()))
             except TypeError:
                 pass
             except yaml.YAMLError as exc:
-                print(f"Error loading {config_file.relative_to(BASE_DIR)}: {exc}")
+                print(f"Error loading {config_file.relative_to(Path.cwd())}: {exc}")
                 if exit_on_error:
                     sys.exit(1)
 
-        for key in self.required_keys:
-            if not self.get(key):
-                raise NotConfiguredError(
-                    f"Missing required configuration option '{key}'"
-                )
+        missing_keys = []
+        for key in self._required_keys:
+            value = self.get(key)
+            if value is None or not str(value):
+                missing_keys.append(key)
+
+        if not missing_keys:
+            return
+
+        relative_path = config_file.relative_to(Path.cwd())
+        raise NotConfiguredError(
+            f"Required settings are missing in {relative_path}: {missing_keys}"
+        )
 
 
 class LogConfig(YamlConfig):
-    def __init__(self):
-        super().__init__("logging.yml")
+    def __init__(self, *args, **kwargs):
+        super().__init__("logging.yml", *args, **kwargs)
 
 
 class Config(YamlConfig):
-    required_keys = ["bot.token", "bot.command_prefix", "redis.uri", "database.uri"]
-
-    def __init__(self):
-        super().__init__("config.yml", required=True)
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+            "config.yml",
+            required=True,
+            *args,
+            **kwargs,
+        )
 
 
 class ExtensionConfig(YamlConfig):
-    def __init__(self, extension):
-        super().__init__(Path("extensions") / f"{extension.qualified_name.lower()}.yml")
+    def __init__(self, name, *args, **kwargs):
+
+        super().__init__(
+            Path("extensions") / f"{name}.yml",
+            *args,
+            **kwargs,
+        )

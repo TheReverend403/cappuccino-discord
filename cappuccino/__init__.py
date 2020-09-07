@@ -27,7 +27,9 @@ from sqlalchemy.orm import Session
 from cappuccino.config import Config, LogConfig
 from cappuccino.database import get_session
 
-dictConfig(dict(LogConfig()))
+log_config = LogConfig()
+log_config.load()
+dictConfig(dict(log_config))
 
 
 def _get_version():
@@ -38,7 +40,17 @@ def _get_version():
 
 
 def create_bot():
-    bot = Cappuccino(Config())
+    bot_config = Config(
+        required_keys=[
+            "bot.token",
+            "bot.command_prefix",
+            "redis.uri",
+            "database.uri",
+        ]
+    )
+    bot_config.save_default()
+    bot_config.load()
+    bot = Cappuccino(bot_config)
     return bot
 
 
@@ -69,14 +81,17 @@ class Cappuccino(Bot):
             try:
                 self.load_extension(f"cappuccino.extensions.{extension}")
                 self.logger.info(f"Enabled extension '{extension}'")
-            except ExtensionError:
-                self.logger.exception(f"Error occurred while loading '{extension}'")
+            except ExtensionError as exc:
+                self.logger.error(exc)
 
     async def on_connect(self):
         self.logger.info("Connected to Discord.")
 
     async def on_ready(self):
         self.logger.info(f"Logged in as {self.user} and ready to go to work.")
+
+    async def on_error(self, event, *args, **kwargs):
+        self.logger.exception(event)
 
     async def on_command_error(self, ctx: commands.Context, error):
 

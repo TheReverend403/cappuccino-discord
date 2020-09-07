@@ -22,8 +22,17 @@ from cappuccino.config import ExtensionConfig
 
 
 class Extension(Cog):
-    def __init__(self, bot: Cappuccino, *args, **kwargs):
+    def __init__(self, bot: Cappuccino, required_config_keys=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        if required_config_keys is None:
+            self.required_config_keys = []
+
         self.bot = bot
         self.logger = logging.getLogger(f"cappuccino.ext.{self.qualified_name.lower()}")
-        self.config = ExtensionConfig(self)
+        self.config = ExtensionConfig(
+            self.qualified_name.lower(),
+            required_keys=required_config_keys,
+        )
+        self.config.save_default()
+        self.config.load()
