@@ -20,7 +20,7 @@ from pathlib import Path
 import yaml
 from dotty_dict import Dotty
 
-from config.errors import NotConfiguredError
+from cappuccino.config.errors import NotConfiguredError
 
 BASE_DIR = Path(__file__).parent.parent
 RESOURCE_ROOT = BASE_DIR / "resources"
