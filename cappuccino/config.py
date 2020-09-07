@@ -20,7 +20,7 @@ from pathlib import Path
 import yaml
 from dotty_dict import Dotty
 
-BASE_DIR = Path.cwd()
+BASE_DIR = Path(__file__).parent.parent  # ../../
 RESOURCE_ROOT = BASE_DIR / "cappuccino" / "resources"
 CONFIG_ROOT = BASE_DIR / "config"
 
@@ -30,23 +30,23 @@ class YamlConfig(Dotty):
         super().__init__(dictionary={})
 
         self._default_path = RESOURCE_ROOT / "config" / filename
-        self._path = CONFIG_ROOT / filename
+        self.path = CONFIG_ROOT / filename
 
         self._save_default(required=required)
         self.load(exit_on_error=True)
 
     def _save_default(self, required=False):
-        if not self._path.exists():
+        if not self.path.exists():
             mkdir_args = {"parents": True, "exist_ok": True}
-            if self._path.is_dir():
-                self._path.mkdir(**mkdir_args)
+            if self.path.is_dir():
+                self.path.mkdir(**mkdir_args)
             else:
-                self._path.parent.mkdir(**mkdir_args)
+                self.path.parent.mkdir(**mkdir_args)
 
             default_relative = self._default_path.relative_to(BASE_DIR)
-            relative = self._path.relative_to(BASE_DIR)
+            relative = self.path.relative_to(BASE_DIR)
             try:
-                shutil.copy2(self._default_path, self._path)
+                shutil.copy2(self._default_path, self.path)
                 print(f"Copied {default_relative} to {relative}")
             except FileNotFoundError:
                 return
@@ -57,7 +57,7 @@ class YamlConfig(Dotty):
 
     def load(self, exit_on_error=False):
         # Load files in order of default -> local.
-        for config_file in [self._default_path, self._path]:
+        for config_file in [self._default_path, self.path]:
             try:
                 self.update(yaml.safe_load(config_file.read_text()))
             except (TypeError, FileNotFoundError):
