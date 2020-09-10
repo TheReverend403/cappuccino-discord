@@ -48,7 +48,7 @@ def create_bot():
         ]
     )
     bot_config.save_default()
-    bot_config.load()
+    bot_config.load(exit_on_error=True)
     bot = Cappuccino(bot_config)
     return bot
 
