@@ -43,7 +43,6 @@ def create_bot():
     bot_config = Config(
         required_keys=[
             "bot.token",
-            "bot.command_prefix",
             "redis.uri",
             "database.uri",
         ]
