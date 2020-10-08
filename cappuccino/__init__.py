@@ -18,7 +18,7 @@ import subprocess
 from logging.config import dictConfig
 
 from aiohttp import ClientSession
-from discord import ChannelType
+from discord import ChannelType, Intents
 from discord.ext import commands
 from discord.ext.commands import Bot, ExtensionError
 from redis import Redis
@@ -66,8 +66,13 @@ class Cappuccino(Bot):
             self.config.get("redis.uri"), decode_responses=True
         )
 
+        intents = Intents.default()
+        intents.members = True
         super().__init__(
-            command_prefix=self.config.get("bot.command_prefix", "."), *args, **kwargs
+            command_prefix=self.config.get("bot.command_prefix", "."),
+            intents=intents,
+            *args,
+            **kwargs,
         )
 
     def load_extensions(self):
