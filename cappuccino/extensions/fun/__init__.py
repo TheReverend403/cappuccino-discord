@@ -17,7 +17,7 @@ from aiohttp import ClientError
 from discord.ext import commands
 from discord.utils import escape_markdown
 
-from cappuccino import Cappuccino
+from cappuccino.bot import Cappuccino
 from cappuccino.extensions import Extension
 
 

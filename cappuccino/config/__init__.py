@@ -20,11 +20,8 @@ from pathlib import Path
 import yaml
 from dotty_dict import Dotty
 
+from cappuccino import RESOURCE_ROOT, CONFIG_ROOT
 from cappuccino.config.errors import NotConfiguredError
-
-BASE_DIR = Path(__file__).parent.parent
-RESOURCE_ROOT = BASE_DIR / "resources"
-CONFIG_ROOT = BASE_DIR.parent / "config"
 
 
 class YamlConfig(Dotty):

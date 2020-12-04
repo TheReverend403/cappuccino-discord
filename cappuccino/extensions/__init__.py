@@ -17,7 +17,7 @@ import logging
 
 from discord.ext.commands import Cog
 
-from cappuccino import Cappuccino
+from cappuccino.bot import Cappuccino
 from cappuccino.config import ExtensionConfig
 
 

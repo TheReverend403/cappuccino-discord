@@ -21,7 +21,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 sys.path.insert(0, os.getcwd())
-from cappuccino import create_bot
+from cappuccino.bot import create_bot
 from cappuccino.database.models import Base
 
 # this is the Alembic Config object, which provides

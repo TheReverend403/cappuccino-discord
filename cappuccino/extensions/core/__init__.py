@@ -26,7 +26,7 @@ from discord.ext.commands import (
     ExtensionAlreadyLoaded,
 )
 
-from cappuccino import Cappuccino
+from cappuccino.bot import Cappuccino
 from cappuccino.extensions import Extension
 
 ERROR_PREFIX = "🔴"

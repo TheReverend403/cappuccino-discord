@@ -17,7 +17,7 @@ import sentry_sdk
 from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
-from cappuccino import create_bot
+from cappuccino.bot import create_bot
 
 
 def init_sentry(bot):

@@ -20,7 +20,7 @@ from discord.ext import commands
 from discord.utils import escape_markdown
 from redis import RedisError
 
-from cappuccino import Cappuccino
+from cappuccino.bot import Cappuccino
 from cappuccino.extensions import Extension
 
 

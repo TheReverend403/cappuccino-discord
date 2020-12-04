@@ -19,7 +19,7 @@ from typing import Type
 import discord
 from discord.ext.commands.cog import Cog
 
-from cappuccino import Cappuccino
+from cappuccino.bot import Cappuccino
 from cappuccino.extensions import Extension
 from .models import Guild, Nickname, User
 
