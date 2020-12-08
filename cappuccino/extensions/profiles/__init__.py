@@ -42,7 +42,7 @@ def humans_only(func):
 class Profiles(Extension):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.db = self.bot.database
+        self._db = self.bot.database
 
     @Cog.listener()
     async def on_ready(self):
@@ -91,7 +91,7 @@ class Profiles(Extension):
         self.create_or_update_guild(after)
 
     def create_or_update_user(self, user: Type[discord.User]):
-        user_model = self.db.query(User).filter_by(id=user.id).first()
+        user_model = self._db.query(User).filter_by(id=user.id).first()
 
         if user_model:
             if (
@@ -105,19 +105,19 @@ class Profiles(Extension):
             user_model = User(
                 id=user.id, username=user.name, discriminator=user.discriminator
             )
-            self.db.add(user_model)
+            self._db.add(user_model)
             self.logger.debug(f"create_user({user})")
 
         if isinstance(user, discord.Member):
             guild_member = (
-                self.db.query(Nickname)
+                self._db.query(Nickname)
                 .filter_by(guild_id=user.guild.id, user_id=user.id)
                 .first()
             )
 
             if guild_member:
                 if user.nick is None:
-                    self.db.delete(guild_member)
+                    self._db.delete(guild_member)
                     self.logger.debug(f"del_nick({user}, {user.guild.id})")
 
                 if guild_member.nickname != user.nick:
@@ -129,13 +129,13 @@ class Profiles(Extension):
                 guild_member = Nickname(
                     user_id=user.id, guild_id=user.guild.id, nickname=user.nick
                 )
-                self.db.add(guild_member)
+                self._db.add(guild_member)
                 self.logger.debug(f"set_nick({user}, {user.nick}, {user.guild.id})")
 
-        self.db.commit()
+        self._db.commit()
 
     def create_or_update_guild(self, guild: discord.Guild):
-        guild_model = self.db.query(Guild).filter_by(id=guild.id).first()
+        guild_model = self._db.query(Guild).filter_by(id=guild.id).first()
         guild_name = guild.name
         guild_description = guild.description
 
@@ -146,8 +146,8 @@ class Profiles(Extension):
             guild_model = Guild(
                 id=guild.id, name=guild_name, description=guild_description
             )
-            self.db.add(guild_model)
-        self.db.commit()
+            self._db.add(guild_model)
+        self._db.commit()
 
 
 def setup(bot: Cappuccino):

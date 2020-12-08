@@ -12,44 +12,38 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with cappuccino-discord.  If not, see <https://www.gnu.org/licenses/>.
-
-from datetime import timedelta
+import random
 
 from aiohttp import ClientError
 from discord.ext import commands
 from discord.utils import escape_markdown
-from redis import RedisError
 
 from cappuccino.bot import Cappuccino
 from cappuccino.extensions import Extension
 
 
 class Catfacts(Extension):
-    _cache_key = "catfacts"
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.cache = self.bot.cache
-        self.limit = self.config.get("limit", 1000)
-        self.max_length = self.config.get("max_length", 200)
-        self.cache_ttl = self.config.get("cache_ttl", 72)
-        self.api_url = self.config.get("api_url", "https://catfact.ninja/facts")
+        self._cache = []
+        self._limit = self.config.get("limit", 1000)
+        self._max_length = self.config.get("max_length", 200)
+        self._api_url = self.config.get("api_url", "https://catfact.ninja/facts")
 
     async def get_fact(self):
-        if self.cache.scard(self._cache_key) > 0:
-            return self.cache.spop(self._cache_key)
+        if len(self._cache) > 0:
+            return self._cache.pop()
 
-        params = {"limit": self.limit}
-        if self.max_length > 0:
-            params.update({"max_length": self.max_length})
+        params = {"limit": self._limit}
+        if self._max_length > 0:
+            params.update({"max_length": self._max_length})
 
         self.logger.debug("Fetching cat facts.")
-        async with self.bot.requests.get(self.api_url, params=params) as response:
+        async with self.bot.requests.get(self._api_url, params=params) as response:
             facts = await response.json()
-            facts = [fact["fact"] for fact in facts["data"]]
-            self.logger.debug(f"Fetched {len(facts)} facts.")
-            self.cache.sadd(self._cache_key, *facts)
-            self.cache.expire(self._cache_key, timedelta(hours=self.cache_ttl))
+            self._cache = [fact["fact"] for fact in facts["data"]]
+            random.shuffle(self._cache)
+            self.logger.debug(f"Fetched {len(self._cache)} facts.")
             return await self.get_fact()
 
     @commands.command(aliases=["cf"])
@@ -59,7 +53,7 @@ class Catfacts(Extension):
             async with ctx.typing():
                 fact = await self.get_fact()
             await ctx.send(escape_markdown(fact))
-        except (ClientError, RedisError):
+        except ClientError:
             self.logger.exception("Error fetching cat facts.")
             await ctx.send(
                 "Something went wrong while I was researching cat facts. Sorry. :("

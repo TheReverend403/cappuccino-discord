@@ -21,7 +21,6 @@ from aiohttp import ClientSession
 from discord import ChannelType, Intents
 from discord.ext import commands
 from discord.ext.commands import Bot, ExtensionError
-from redis import Redis
 from sqlalchemy.orm import Session
 
 from cappuccino.config import Config, LogConfig
@@ -43,7 +42,6 @@ def create_bot():
     bot_config = Config(
         required_keys=[
             "bot.token",
-            "redis.uri",
             "database.uri",
         ]
     )
@@ -61,9 +59,6 @@ class Cappuccino(Bot):
         self.database: Session = get_session(self.config.get("database.uri"))
         self.requests = ClientSession(
             headers={"User-Agent": f"cappuccino-discord ({self.version})"}
-        )
-        self.cache: Redis = Redis.from_url(
-            self.config.get("redis.uri"), decode_responses=True
         )
 
         intents = Intents.default()

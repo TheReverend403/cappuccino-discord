@@ -9,10 +9,6 @@ database:
   ## https://docs.sqlalchemy.org/en/13/core/engines.html#postgresql
   uri: ''
 
-redis:
-  ## https://redis-py.readthedocs.io/en/stable/#redis.ConnectionPool.from_url
-  uri: ''
-
 ## Leave blank if you don't want to use sentry.
 sentry:
   dsn: ''
