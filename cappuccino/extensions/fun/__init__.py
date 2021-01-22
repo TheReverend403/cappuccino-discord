@@ -13,9 +13,9 @@
 #  You should have received a copy of the GNU General Public License
 #  along with cappuccino-discord.  If not, see <https://www.gnu.org/licenses/>.
 
-from aiohttp import ClientError
 from discord.ext import commands
 from discord.utils import escape_markdown
+from httpx import RequestError
 
 from cappuccino.bot import Cappuccino
 from cappuccino.extensions import Extension
@@ -29,13 +29,13 @@ class Fun(Extension):
     async def wtc(self, ctx: commands.Context):
         """Get a random commit message from whatthecommit.com."""
         try:
-            async with ctx.typing(), self.bot.requests.get(
-                "http://whatthecommit.com/index.txt"
-            ) as response:
-                commit_message = await response.text()
+            async with ctx.typing(), self.bot.httpx as client:
+                response = await client.get("http://whatthecommit.com/index.txt")
+                response.raise_for_status()
+                commit_message = response.text
                 commit_message = escape_markdown(commit_message.strip())
             await ctx.send(commit_message)
-        except ClientError:
+        except RequestError:
             self.logger.exception("Error fetching commit message.")
             await ctx.send(
                 "Failed to get commit message. Why do you always break everything? e.e"

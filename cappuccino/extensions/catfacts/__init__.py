@@ -12,11 +12,12 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with cappuccino-discord.  If not, see <https://www.gnu.org/licenses/>.
+
 import random
 
-from aiohttp import ClientError
 from discord.ext import commands
 from discord.utils import escape_markdown
+from httpx import RequestError
 
 from cappuccino.bot import Cappuccino
 from cappuccino.extensions import Extension
@@ -39,8 +40,10 @@ class Catfacts(Extension):
             params.update({"max_length": self._max_length})
 
         self.logger.debug("Fetching cat facts.")
-        async with self.bot.requests.get(self._api_url, params=params) as response:
-            facts = await response.json()
+        async with self.bot.httpx as client:
+            response = await client.get(self._api_url, params=params)
+            response.raise_for_status()
+            facts = response.json()
             self._cache = [fact["fact"] for fact in facts["data"]]
             random.shuffle(self._cache)
             self.logger.debug(f"Fetched {len(self._cache)} facts.")
@@ -53,7 +56,7 @@ class Catfacts(Extension):
             async with ctx.typing():
                 fact = await self.get_fact()
             await ctx.send(escape_markdown(fact))
-        except ClientError:
+        except RequestError:
             self.logger.exception("Error fetching cat facts.")
             await ctx.send(
                 "Something went wrong while I was researching cat facts. Sorry. :("

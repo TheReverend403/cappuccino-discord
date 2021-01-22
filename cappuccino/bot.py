@@ -17,10 +17,10 @@ import logging
 import subprocess
 from logging.config import dictConfig
 
-from aiohttp import ClientSession
 from discord import ChannelType, Intents
 from discord.ext import commands
 from discord.ext.commands import Bot, ExtensionError
+from httpx import AsyncClient
 from sqlalchemy.orm import Session
 
 from cappuccino.config import Config, LogConfig
@@ -57,8 +57,9 @@ class Cappuccino(Bot):
         self.logger = logging.getLogger("cappuccino")
         self.config = botconfig
         self.database: Session = get_session(self.config.get("database.uri"))
-        self.requests = ClientSession(
-            headers={"User-Agent": f"cappuccino-discord ({self.version})"}
+        self.httpx = AsyncClient(
+            headers={"User-Agent": f"cappuccino-discord ({self.version})"},
+            http2=True,
         )
 
         intents = Intents.default()

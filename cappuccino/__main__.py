@@ -13,7 +13,10 @@
 #  You should have received a copy of the GNU General Public License
 #  along with cappuccino-discord.  If not, see <https://www.gnu.org/licenses/>.
 
+import asyncio
+
 import sentry_sdk
+import uvloop
 from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
@@ -35,6 +38,7 @@ def init_sentry(bot):
 
 
 def main():
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     bot = create_bot()
     init_sentry(bot)
     bot.load_extensions()
