@@ -7,7 +7,6 @@
 <p align="center">
 <a href="LICENSE"><img src="https://img.shields.io/github/license/FoxDev/cappuccino-discord?style=flat-square" alt="GitHub"></a>
 <a href="https://github.com/FoxDev/cappuccino-discord/actions"><img src="https://img.shields.io/github/workflow/status/FoxDev/cappuccino-discord/ci?style=flat-square" alt="GitHub Workflow Status"></a>
-<a href="https://requires.io/github/FoxDev/cappuccino-discord/requirements"><img src="https://img.shields.io/requires/github/FoxDev/cappuccino-discord?style=flat-square" alt="Requires.io"></a>
 <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square" alt="Code style: black"></a>
 </p>
 
