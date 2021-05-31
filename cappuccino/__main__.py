@@ -17,7 +17,6 @@ import asyncio
 
 import sentry_sdk
 import uvloop
-from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
 from cappuccino.bot import create_bot
@@ -31,7 +30,7 @@ def init_sentry(bot):
 
     sentry_sdk.init(
         dsn,
-        integrations=[SqlalchemyIntegration(), RedisIntegration()],
+        integrations=[SqlalchemyIntegration()],
         release=bot.version,
     )
     bot.logger.info("Sentry logging enabled.")
